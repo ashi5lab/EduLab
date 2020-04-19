@@ -1,7 +1,11 @@
 package models
 
 import (
+	"html"
+	"strings"
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
@@ -15,4 +19,20 @@ type User struct {
 	CreatedOn time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_on"`
 	UpdatedBy int       `gorm:"json:"updated_by"`
 	UpdatedOn time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_on"`
+}
+
+//Hashing function
+
+func Hash(password string) ([]byte, error) {
+	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+}
+
+//prepare function
+func (u *User) Prepare() {
+	u.UserName = html.EscapeString(strings.TrimSpace(u.UserName))
+	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
+
+	//hashedPassword, _ := Hash(u.Password)
+	//u.Password = hashedPassword
+
 }

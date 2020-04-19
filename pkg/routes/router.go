@@ -19,6 +19,8 @@ func (server *Server) InitializeRoutes() {
 
 	// Login Route
 	server.Router.HandleFunc("/login", server.Handler.Login).Methods("POST")
+	//User Route
+	server.AddUserRouters()
 
 }
 
