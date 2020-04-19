@@ -4,6 +4,7 @@ import (
 	"html"
 	"strings"
 	"time"
+	"github.com/jinzhu/gorm"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -34,5 +35,16 @@ func (u *User) Prepare() {
 
 	//hashedPassword, _ := Hash(u.Password)
 	//u.Password = hashedPassword
+
+}
+
+func (u *User) SaveUser(db *gorm.DB) (*User,error){
+	var err error
+	err = db.Debug().Create(&u).Error 
+	if err != nil{
+		return &User{},err
+	}
+	return u,nil
+
 
 }
