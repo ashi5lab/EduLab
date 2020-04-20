@@ -4,22 +4,23 @@ import (
 	"html"
 	"strings"
 	"time"
+
 	"github.com/jinzhu/gorm"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
-	UserId    uint32    `gorm:"primary_key;auto_increment" json:"id"`
-	UserName  string    `gorm:"size:40;not null;unique" json:"name"`
+	UserID    uint32    `gorm:"primary_key;auto_increment" json:"id"`
+	UserName  string    `gorm:"size:40;not null;unique" json:"username"`
 	Email     string    `gorm:"size:50;not null;unique" json:"email"`
-	RoleId    int       `gorm:"not null;unique" json:"role"`
-	Password  string    `gorm:"size:100;not null;" json:"password"`
-	IsDeleted bool      `gorm:"default:false" gorm:"json:"deleted"`
-	CreatedBy int       `gorm:"json:"created_by"`
-	CreatedOn time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_on"`
-	UpdatedBy int       `gorm:"json:"updated_by"`
-	UpdatedOn time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_on"`
+	RoleID    int       `gorm:"not null;unique" json:"role"`
+	Password  string    `gorm:"size:100;not null;" json:"_"`
+	IsDeleted bool      `gorm:"default:false" json:"_"`
+	CreatedBy int       `gorm:json:"_"`
+	CreatedOn time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"_"`
+	UpdatedBy int       `gorm:json:"_"`
+	UpdatedOn time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"_"`
 }
 
 //Hashing function
@@ -38,13 +39,12 @@ func (u *User) Prepare() {
 
 }
 
-func (u *User) SaveUser(db *gorm.DB) (*User,error){
+func (u *User) SaveUser(db *gorm.DB) (*User, error) {
 	var err error
-	err = db.Debug().Create(&u).Error 
-	if err != nil{
-		return &User{},err
+	err = db.Debug().Create(&u).Error
+	if err != nil {
+		return &User{}, err
 	}
-	return u,nil
-
+	return u, nil
 
 }
