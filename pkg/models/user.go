@@ -82,7 +82,7 @@ func (u *User) FindUserByID(db *gorm.DB, uid uint32) (*User, error) {
 
 }
 
-//Update a user
+//UpdateUser a user
 func (u *User) UpdateUser(db *gorm.DB, uid uint32) (*User, error) {
 	fmt.Println(uid)
 	// To hash the password
