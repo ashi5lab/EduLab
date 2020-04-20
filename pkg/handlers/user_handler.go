@@ -26,8 +26,6 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 	user := models.User{}
 	err = json.Unmarshal(body, &user)
 	fmt.Println("User", user)
-	json.NewEncoder(w).Encode("Successfully Created")
-
 	if err != nil {
 		w.WriteHeader(500)
 		err := json.NewEncoder(w).Encode("Error creating user")
