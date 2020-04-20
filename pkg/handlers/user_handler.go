@@ -12,6 +12,7 @@ import (
 func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	body, err := ioutil.ReadAll(r.Body)
+	fmt.Println("Body", r.Body)
 
 	if err != nil {
 		w.WriteHeader(500)
@@ -24,6 +25,7 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	user := models.User{}
 	err = json.Unmarshal(body, &user)
+	fmt.Println("User", user)
 	json.NewEncoder(w).Encode("Successfully Created")
 
 	if err != nil {
@@ -34,10 +36,10 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-		
+
 	user.Prepare()
 	createdUser, err := user.SaveUser(server.DB)
-	if err != nil{
+	if err != nil {
 		json.NewEncoder(w).Encode("User not created in DB")
 		return
 	}
