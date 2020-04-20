@@ -1,10 +1,12 @@
 package models
 
 import (
+	"errors"
 	"html"
 	"strings"
 	"time"
 
+	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -32,7 +34,45 @@ func (u *User) Prepare() {
 	u.UserName = html.EscapeString(strings.TrimSpace(u.UserName))
 	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
 
-	//hashedPassword, _ := Hash(u.Password)
-	//u.Password = hashedPassword
+	hashedPassword, _ := Hash(u.Password)
+	u.Password = string(hashedPassword)
+
+}
+
+func (u *User) SaveUser(db *gorm.DB) (*User, error) {
+
+	var err error
+	err = db.Debug().Create(&u).Error
+	if err != nil {
+		return &User{}, err
+	}
+	return u, nil
+
+}
+
+func (u *User) FindAllUsers(db *gorm.DB) (*[]User, error) {
+	var err error
+	users := []User{}
+	err = db.Debug().Model(&User{}).Limit(100).Find(&users).Error
+
+	if err != nil {
+		return &[]User{}, err
+	}
+	return &users, nil
+
+}
+
+func (u *User) FindUserByID(db *gorm.DB, uid uint32) (*User, error) {
+	var err error
+
+	err = db.Debug().Model(&User{}).Where("user_id=?", uid).Take(u).Error
+
+	if err != nil {
+		return &User{}, err
+	}
+	if gorm.IsRecordNotFoundError(err) {
+		return &User{}, errors.New("User Not Found")
+	}
+	return u, nil
 
 }
