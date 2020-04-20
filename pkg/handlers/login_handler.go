@@ -9,6 +9,7 @@ import (
 	"github.com/ashi5lab/EduLab/pkg/models"
 )
 
+//Login method handler
 func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {

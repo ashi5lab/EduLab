@@ -6,6 +6,8 @@ import (
 
 	"github.com/ashi5lab/EduLab/pkg/models"
 	"github.com/jinzhu/gorm"
+
+	//postgres import
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
@@ -13,6 +15,7 @@ type Server struct {
 	DB *gorm.DB
 }
 
+//Initialize method
 func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, DbName string) {
 
 	var err error
