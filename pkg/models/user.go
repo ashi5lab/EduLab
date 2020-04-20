@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"fmt"
 	"html"
 	"strings"
 	"time"
@@ -35,8 +36,8 @@ func (u *User) Prepare() {
 	u.UserName = html.EscapeString(strings.TrimSpace(u.UserName))
 	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
 
-	hashedPassword, _ := Hash(u.Password)
-	u.Password = string(hashedPassword)
+	// hashedPassword, _ := Hash(u.Password)
+	// u.Password = string(hashedPassword)
 
 }
 
@@ -83,25 +84,24 @@ func (u *User) FindUserByID(db *gorm.DB, uid uint32) (*User, error) {
 
 //Update a user
 func (u *User) UpdateUser(db *gorm.DB, uid uint32) (*User, error) {
-
+	fmt.Println(uid)
 	// To hash the password
 	u.Prepare()
 
-	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
+	db = db.Debug().Model(&User{}).Where("user_id = ?", uid).Take(&User{}).UpdateColumns(
 		map[string]interface{}{
-			"password":  u.Password,
-			"nickname":  u.UserName,
-			"email":     u.Email,
-			"update_at": time.Now(),
+			//"password":  u.Password,
+			"user_name":  u.UserName,
+			"email":      u.Email,
+			"updated_on": time.Now(),
 		},
 	)
 
 	if db.Error != nil {
 		return &User{}, db.Error
 	}
-
 	//For display Updated User
-	err := db.Debug().Model(&User{}).Where("id = ?", uid).Take(&u).Error
+	err := db.Debug().Model(&User{}).Where("user_id = ?", uid).Take(&u).Error
 	if err != nil {
 		return &User{}, err
 	}
