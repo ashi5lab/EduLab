@@ -4,6 +4,7 @@ import (
 	"html"
 	"strings"
 	"time"
+
 	"github.com/jinzhu/gorm"
 
 	"golang.org/x/crypto/bcrypt"
@@ -11,9 +12,9 @@ import (
 
 type User struct {
 	UserId    uint32    `gorm:"primary_key;auto_increment" json:"id"`
-	UserName  string    `gorm:"size:40;not null;unique" json:"name"`
+	UserName  string    `gorm:"size:40;not null;unique"`
 	Email     string    `gorm:"size:50;not null;unique" json:"email"`
-	RoleId    int       `gorm:"not null;unique" json:"role"`
+	RoleId    int       `gorm:"not null" json:"role"`
 	Password  string    `gorm:"size:100;not null;" json:"password"`
 	IsDeleted bool      `gorm:"default:false" gorm:"json:"deleted"`
 	CreatedBy int       `gorm:"json:"created_by"`
@@ -38,13 +39,12 @@ func (u *User) Prepare() {
 
 }
 
-func (u *User) SaveUser(db *gorm.DB) (*User,error){
+func (u *User) SaveUser(db *gorm.DB) (*User, error) {
 	var err error
-	err = db.Debug().Create(&u).Error 
-	if err != nil{
-		return &User{},err
+	err = db.Debug().Create(&u).Error
+	if err != nil {
+		return &User{}, err
 	}
-	return u,nil
-
+	return u, nil
 
 }
