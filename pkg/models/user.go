@@ -40,46 +40,9 @@ func (u *User) Prepare() {
 
 }
 
-func (u *User) SaveUser(db *gorm.DB) (*User, error) {
-
-	var err error
-	err = db.Debug().Create(&u).Error
-	if err != nil {
-		return &User{}, err
-	}
-	return u, nil
-
-}
-
-func (u *User) FindAllUsers(db *gorm.DB) (*[]User, error) {
-	var err error
-	users := []User{}
-	err = db.Debug().Model(&User{}).Limit(100).Find(&users).Error
-
-	if err != nil {
-		return &[]User{}, err
-	}
-	return &users, nil
-
-}
-
-func (u *User) FindUserByID(db *gorm.DB, uid uint32) (*User, error) {
-	var err error
-
-	err = db.Debug().Model(&User{}).Where("user_id=?", uid).Take(u).Error
-
-	if err != nil {
-		return &User{}, err
-	}
-	if gorm.IsRecordNotFoundError(err) {
-		return &User{}, errors.New("User Not Found")
-	}
-	return u, nil
-
-}
-
 //SaveUser method
 func (u *User) SaveUser(db *gorm.DB) (*User, error) {
+
 	var err error
 	err = db.Debug().Create(&u).Error
 	if err != nil {
@@ -93,10 +56,27 @@ func (u *User) SaveUser(db *gorm.DB) (*User, error) {
 func (u *User) FindAllUsers(db *gorm.DB) (*[]User, error) {
 	var err error
 	users := []User{}
-	err = db.Debug().Find(&users).Error
+	err = db.Debug().Model(&User{}).Limit(100).Find(&users).Error
+
 	if err != nil {
 		return &[]User{}, err
 	}
 	return &users, nil
+
+}
+
+//FindUserByID method
+func (u *User) FindUserByID(db *gorm.DB, uid uint32) (*User, error) {
+	var err error
+
+	err = db.Debug().Model(&User{}).Where("user_id=?", uid).Take(u).Error
+
+	if err != nil {
+		return &User{}, err
+	}
+	if gorm.IsRecordNotFoundError(err) {
+		return &User{}, errors.New("User Not Found")
+	}
+	return u, nil
 
 }

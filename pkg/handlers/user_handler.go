@@ -61,19 +61,7 @@ func (server *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(users)
 }
 
-func (server *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
-
-	user := models.User{}
-	users, err := user.FindAllUsers(server.DB)
-
-	if err != nil {
-		responses.ERROR(w, http.StatusInternalServerError, err)
-		return
-	}
-	responses.JSON(w, http.StatusOK, users)
-
-}
-
+//GetUser method
 func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
