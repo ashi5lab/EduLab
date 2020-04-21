@@ -79,7 +79,7 @@ func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusOK, userGotten)
 }
 
-//Update user Method
+//UpdateUser Method
 func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	uid, err := strconv.ParseUint(vars["id"], 10, 32)
@@ -100,16 +100,6 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
 	}
-
-	// tokenID, err := auth.ExtractTokenUserId(r)
-	// if err != nil {
-	// 	responses.ERROR(w, http.StatusUnauthorized, errors.New("Un-authorized"))
-	// 	return
-	// }
-	// if tokenID != uint32(uid) {
-	// 	responses.ERROR(w, http.StatusUnauthorized, errors.New(http.StatusText(http.StatusUnauthorized)))
-	// 	return
-	// }
 
 	updatedUser, err := user.UpdateUser(server.DB, uint32(uid))
 	if err != nil {
