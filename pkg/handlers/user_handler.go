@@ -109,3 +109,24 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusOK, updatedUser)
 	json.NewEncoder(w).Encode("User Updated")
 }
+
+// DeleteUser method
+func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	user := models.User{}
+
+	uid, err := strconv.ParseUint(vars["id"], 10, 32)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	_, err = user.DeleteUser(server.DB, uint32(uid))
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+	responses.JSON(w, http.StatusNoContent, "")
+	json.NewEncoder(w).Encode("User Deleted")
+}

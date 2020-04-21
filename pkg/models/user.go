@@ -56,7 +56,7 @@ func (u *User) SaveUser(db *gorm.DB) (*User, error) {
 func (u *User) FindAllUsers(db *gorm.DB) (*[]User, error) {
 	var err error
 	users := []User{}
-	err = db.Debug().Model(&User{}).Limit(100).Find(&users).Error
+	err = db.Debug().Model(&User{}).Limit(100).Where("is_deleted = ?", false).Find(&users).Error
 
 	if err != nil {
 		return &[]User{}, err
@@ -94,4 +94,18 @@ func (u *User) UpdateUser(db *gorm.DB, uid uint32) (*User, error) {
 		return &User{}, err
 	}
 	return u, nil
+}
+
+//DeleteUser
+func (u *User) DeleteUser(db *gorm.DB, uid uint32) (int64, error) {
+	db = db.Debug().Model(&User{}).Where("user_id = ?", uid).Take(&User{}).UpdateColumns(
+		map[string]interface{}{
+			"is_deleted": true,
+		},
+	)
+
+	if db.Error != nil {
+		return 0, db.Error
+	}
+	return db.RowsAffected, nil
 }
