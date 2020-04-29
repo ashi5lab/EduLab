@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/ashi5lab/EduLab/pkg/handlers"
+	"github.com/ashi5lab/EduLab/pkg/middlewares"
 	"github.com/gorilla/mux"
 )
 
@@ -19,7 +20,7 @@ type Server struct {
 func (server *Server) InitializeRoutes() {
 	server.Router = mux.NewRouter()
 
-	server.Router.HandleFunc("/login", server.Handler.Login).Methods("POST")
+	server.Router.HandleFunc("/login", middlewares.SetMiddlewareJSON(server.Handler.Login)).Methods("POST")
 	// User Route
 	server.AddUserRouters()
 
