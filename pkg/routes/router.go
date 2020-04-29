@@ -18,7 +18,10 @@ func (server *Server) InitializeRoutes() {
 	server.Router = mux.NewRouter()
 
 	// Login Route
-	server.Router.HandleFunc("/login", server.Handler.Login).Methods("POST")
+	// server.Router.HandleFunc("/login", server.Handler.Login).Methods("POST")
+
+	// Login Route
+	server.AddLoginRouters()
 	// User Route
 	server.AddUserRouters()
 
