@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/ashi5lab/EduLab/pkg/models"
+	"golang.org/x/crypto/bcrypt"
 )
 
 //Login method handler
@@ -57,8 +58,9 @@ func (server *Server) SignIn(email, password string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	// if user.Email == "admin@admin.in" && user.Password == "abcd" {
-	// 	return "Login Success", nil
-	// }
-	return "Login Successful", nil
+	err = models.VerifyPassword(user.Password, password)
+	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
+		return "", err
+	}
+	return auth.createToken(user.UserID)
 }
