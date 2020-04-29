@@ -9,6 +9,7 @@ import (
 	"github.com/ashi5lab/EduLab/pkg/models"
 )
 
+//Login method handler
 func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -48,16 +49,16 @@ func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 //sign in method
 func (server *Server) SignIn(email, password string) (string, error) {
 
-	//var err error
+	var err error
 
 	user := models.User{}
 
-	// err = server.DB.Debug().Model(models.User{}).Where("email = ?", email).Take(&user).Error
-	// if err != nil {
-	// 	return "", err
-	// }
-	if user.Email == "admin@admin.in" && user.Password == "abcd" {
-		return "Login Success", nil
+	err = server.DB.Debug().Model(models.User{}).Where("email = ?", email).Take(&user).Error
+	if err != nil {
+		return "", err
 	}
-	return "Login Success", nil
+	// if user.Email == "admin@admin.in" && user.Password == "abcd" {
+	// 	return "Login Success", nil
+	// }
+	return "Login Successful", nil
 }
