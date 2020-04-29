@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/ashi5lab/EduLab/pkg/auth"
 	"github.com/ashi5lab/EduLab/pkg/models"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -31,7 +32,8 @@ func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	token, err := server.SignIn(user.Email, user.Password)
+
+	token, err := server.SignIn(user.Email, user.UserName)
 	if err != nil {
 		w.WriteHeader(500)
 		err := json.NewEncoder(w).Encode(`{"message":"Invalid User details"}`)
@@ -58,9 +60,10 @@ func (server *Server) SignIn(email, password string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	err = models.VerifyPassword(user.Password, password)
+
+	err = models.VerifyPassword(user.UserName, password)
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
 		return "", err
 	}
-	return auth.createToken(user.UserID)
+	return auth.CreateToken(user.UserID)
 }

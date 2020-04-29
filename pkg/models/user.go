@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"fmt"
 	"html"
 	"strings"
 	"time"
@@ -30,6 +31,7 @@ func Hash(password string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 }
 func VerifyPassword(hashedPassword, password string) error {
+	fmt.Println(Hash(password))
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }
 
@@ -37,9 +39,8 @@ func VerifyPassword(hashedPassword, password string) error {
 func (u *User) Prepare() {
 	u.UserName = html.EscapeString(strings.TrimSpace(u.UserName))
 	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
-
-	// hashedPassword, _ := Hash(u.Password)
-	// u.Password = string(hashedPassword)
+	hashedPassword, _ := Hash(u.Password)
+	u.Password = string(hashedPassword)
 
 }
 
