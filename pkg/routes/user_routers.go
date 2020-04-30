@@ -6,7 +6,7 @@ import (
 
 //AddUserRouters function
 func (server *Server) AddUserRouters() {
-	server.Router.HandleFunc("/users", middlewares.SetMiddlewareJSON(server.Handler.CreateUser)).Methods("POST")
+	server.Router.HandleFunc("/users", middlewares.SetMiddlewareAuthentication(middlewares.SetMiddlewareJSON(server.Handler.CreateUser))).Methods("POST")
 	server.Router.HandleFunc("/users", middlewares.SetMiddlewareJSON(server.Handler.GetUsers)).Methods("GET")
 	server.Router.HandleFunc("/users/{id}", middlewares.SetMiddlewareJSON(server.Handler.GetUser)).Methods("GET")
 	server.Router.HandleFunc("/users/{id}", middlewares.SetMiddlewareJSON(server.Handler.UpdateUser)).Methods("PUT")

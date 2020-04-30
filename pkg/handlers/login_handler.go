@@ -2,12 +2,13 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 
 	"github.com/ashi5lab/EduLab/pkg/auth"
 	"github.com/ashi5lab/EduLab/pkg/models"
+	"github.com/ashi5lab/EduLab/pkg/responses"
+	"github.com/ashi5lab/EduLab/pkg/utils/formaterror"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -15,41 +16,29 @@ import (
 func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		w.WriteHeader(500)
-		err := json.NewEncoder(w).Encode(`{"message":"Error Login"}`)
-		if err != nil {
-			fmt.Fprintf(w, "%s", err.Error())
-		}
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
 	user := models.User{}
 	err = json.Unmarshal(body, &user)
 	if err != nil {
-		w.WriteHeader(500)
-		err := json.NewEncoder(w).Encode(`{"message":"Error Login"}`)
-		if err != nil {
-			fmt.Fprintf(w, "%s", err.Error())
-		}
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
 
 	token, err := server.SignIn(user.Email, user.Password)
 	if err != nil {
-		w.WriteHeader(500)
-		err := json.NewEncoder(w).Encode(`{"message":"Invalid User details"}`)
-		if err != nil {
-			fmt.Fprintf(w, "%s", err.Error())
-		}
+		formattedError := formaterror.FormatError(err.Error())
+		responses.ERROR(w, http.StatusUnprocessableEntity, formattedError)
 		return
 	}
-	w.WriteHeader(200)
-	err = json.NewEncoder(w).Encode(`{"message":"Login Success,"token":"` + token + `"}`)
-	if err != nil {
-		fmt.Fprintf(w, "%s", err.Error())
-	}
+
+	m := models.Message{Message: "Login Success", Token: token}
+
+	json.NewEncoder(w).Encode(m)
 }
 
-//sign in method
+//SignIn method
 func (server *Server) SignIn(email, password string) (string, error) {
 
 	var err error
