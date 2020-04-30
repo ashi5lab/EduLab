@@ -33,7 +33,7 @@ func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := server.SignIn(user.Email, user.UserName)
+	token, err := server.SignIn(user.Email, user.Password)
 	if err != nil {
 		w.WriteHeader(500)
 		err := json.NewEncoder(w).Encode(`{"message":"Invalid User details"}`)
@@ -61,9 +61,10 @@ func (server *Server) SignIn(email, password string) (string, error) {
 		return "", err
 	}
 
-	err = models.VerifyPassword(user.UserName, password)
+	err = models.VerifyPassword(user.Password, password)
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
 		return "", err
 	}
+
 	return auth.CreateToken(user.UserID)
 }

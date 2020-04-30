@@ -2,7 +2,6 @@ package models
 
 import (
 	"errors"
-	"fmt"
 	"html"
 	"strings"
 	"time"
@@ -14,11 +13,11 @@ import (
 
 //User struct
 type User struct {
-	UserID    uint32    `gorm:"primary_key;auto_increment" json:"id"`
+	UserID    uint32    `gorm:"primary_key;AUTO_INCREMENT" json:"id"`
 	UserName  string    `gorm:"size:40;not null;unique" json:"username"`
 	Email     string    `gorm:"size:50;not null;unique" json:"email"`
-	RoleID    int       `gorm:"not null;" json:"role"`
-	Password  string    `gorm:"size:100;not null;" json:"_"`
+	RoleID    int       `gorm:"not null;" json:"roleid"`
+	Password  string    `gorm:"size:100;not null;" json:"password"`
 	IsDeleted bool      `gorm:"default:false" json:"_"`
 	CreatedBy int       `json:"_"`
 	CreatedOn time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"_"`
@@ -31,16 +30,26 @@ func Hash(password string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 }
 func VerifyPassword(hashedPassword, password string) error {
-	fmt.Println(Hash(password))
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+}
+
+//BeforeSave
+func (u *User) BeforeSave()
+{
+	hashedPassword, err := Hash(u.Password)
+	if err != nil {
+		return err
+	}
+	u.Password = string(hashedPassword)
+	return nil
 }
 
 //Prepare function
 func (u *User) Prepare() {
 	u.UserName = html.EscapeString(strings.TrimSpace(u.UserName))
 	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
-	hashedPassword, _ := Hash(u.Password)
-	u.Password = string(hashedPassword)
+	u.CreatedAt = time.Now()
+	u.UpdatedAt = time.Now()
 
 }
 

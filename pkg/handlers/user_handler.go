@@ -38,8 +38,9 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-
+	fmt.Println(user.Password)
 	user.Prepare()
+	user.BeforeSave()
 	createdUser, err := user.SaveUser(server.DB)
 	if err != nil {
 		json.NewEncoder(w).Encode("User not created in DB")
