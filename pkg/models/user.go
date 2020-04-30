@@ -34,8 +34,7 @@ func VerifyPassword(hashedPassword, password string) error {
 }
 
 //BeforeSave
-func (u *User) BeforeSave()
-{
+func (u *User) BeforeSave() error {
 	hashedPassword, err := Hash(u.Password)
 	if err != nil {
 		return err
@@ -48,9 +47,8 @@ func (u *User) BeforeSave()
 func (u *User) Prepare() {
 	u.UserName = html.EscapeString(strings.TrimSpace(u.UserName))
 	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
-	u.CreatedAt = time.Now()
-	u.UpdatedAt = time.Now()
-
+	u.CreatedOn = time.Now()
+	u.UpdatedOn = time.Now()
 }
 
 //SaveUser method
