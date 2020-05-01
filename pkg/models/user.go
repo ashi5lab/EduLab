@@ -38,20 +38,12 @@ func VerifyPassword(hashedPassword, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }
 
-//BeforeSave
-func (u *User) BeforeSave() error {
-	hashedPassword, err := Hash(u.Password)
-	if err != nil {
-		return err
-	}
-	u.Password = string(hashedPassword)
-	return nil
-}
-
 //Prepare function
 func (u *User) Prepare() {
 	u.UserName = html.EscapeString(strings.TrimSpace(u.UserName))
 	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
+	hashedPassword, _ := Hash(u.Password)
+	u.Password = string(hashedPassword)
 	u.CreatedOn = time.Now()
 	u.UpdatedOn = time.Now()
 }

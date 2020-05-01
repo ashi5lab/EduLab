@@ -49,7 +49,6 @@ func (server *Server) SignIn(email, password string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
 	err = models.VerifyPassword(user.Password, password)
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
 		return "", err
