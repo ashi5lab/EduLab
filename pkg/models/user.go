@@ -25,6 +25,7 @@ type User struct {
 	UpdatedOn time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"_"`
 }
 
+// Message struct
 type Message struct {
 	Message string
 	Token   string
