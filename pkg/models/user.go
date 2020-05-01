@@ -17,7 +17,7 @@ type User struct {
 	UserName  string    `gorm:"size:40;not null;" json:"username"`
 	Email     string    `gorm:"size:50;not null;unique" json:"email"`
 	RoleID    int       `gorm:"not null;" json:"roleid"`
-	Password  string    `gorm:"size:100;not null;" json:"password"`
+	Password  string    `gorm:"size:100;not null;" json:"_"`
 	IsDeleted bool      `gorm:"default:false" json:"_"`
 	CreatedBy int       `json:"_"`
 	CreatedOn time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"_"`
@@ -25,6 +25,7 @@ type User struct {
 	UpdatedOn time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"_"`
 }
 
+// Message struct
 type Message struct {
 	Message string
 	Token   string
@@ -34,11 +35,13 @@ type Message struct {
 func Hash(password string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 }
+
+//VerifyPassword function
 func VerifyPassword(hashedPassword, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }
 
-//BeforeSave
+//BeforeSave function
 func (u *User) BeforeSave() error {
 	hashedPassword, err := Hash(u.Password)
 	if err != nil {
