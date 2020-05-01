@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/ashi5lab/EduLab/pkg/models"
 	"github.com/jinzhu/gorm"
 
 	//postgres import
@@ -31,6 +30,6 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, D
 		}
 	}
 
-	server.DB.Debug().AutoMigrate(&models.User{}, &models.Student{}) //database migration
+	//server.DB.Debug().AutoMigrate(&models.User{}, &models.Student{}) //database migration
 
 }
