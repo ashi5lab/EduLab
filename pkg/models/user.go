@@ -34,24 +34,18 @@ type Message struct {
 func Hash(password string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 }
+
+//VerifyPassword function
 func VerifyPassword(hashedPassword, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
-}
-
-//BeforeSave
-func (u *User) BeforeSave() error {
-	hashedPassword, err := Hash(u.Password)
-	if err != nil {
-		return err
-	}
-	u.Password = string(hashedPassword)
-	return nil
 }
 
 //Prepare function
 func (u *User) Prepare() {
 	u.UserName = html.EscapeString(strings.TrimSpace(u.UserName))
 	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
+	hashedPassword, _ := Hash(u.Password)
+	u.Password = string(hashedPassword)
 	u.CreatedOn = time.Now()
 	u.UpdatedOn = time.Now()
 }
@@ -112,7 +106,7 @@ func (u *User) UpdateUser(db *gorm.DB, uid uint32) (*User, error) {
 	return u, nil
 }
 
-//DeleteUser
+//DeleteUser function
 func (u *User) DeleteUser(db *gorm.DB, uid uint32) (int64, error) {
 	db = db.Debug().Model(&User{}).Where("user_id = ?", uid).Take(&User{}).UpdateColumns(
 		map[string]interface{}{

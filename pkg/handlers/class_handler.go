@@ -12,24 +12,24 @@ import (
 	"github.com/gorilla/mux"
 )
 
-//CreateUser method
-func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
+//CreateClass method
+func (server *Server) CreateClass(w http.ResponseWriter, r *http.Request) {
 
 	body, err := ioutil.ReadAll(r.Body)
 	fmt.Println("Body", r.Body)
 
 	if err != nil {
 		w.WriteHeader(500)
-		err := json.NewEncoder(w).Encode("Error reading user")
+		err := json.NewEncoder(w).Encode("Error reading class")
 		if err != nil {
 			fmt.Fprintf(w, "%s", err.Error())
 		}
 		return
 	}
 
-	user := models.User{}
-	err = json.Unmarshal(body, &user)
-	fmt.Println("User", user)
+	class := models.Class{}
+	err = json.Unmarshal(body, &class)
+	fmt.Println("Class", class)
 	if err != nil {
 		w.WriteHeader(500)
 		err := json.NewEncoder(w).Encode("Error Unmarshaling json")
@@ -38,31 +38,31 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	fmt.Println(user.Password)
-	user.Prepare()
-	createdUser, err := user.SaveUser(server.DB)
+
+	//class.Prepare()
+	createdClass, err := class.SaveClass(server.DB)
 	if err != nil {
-		json.NewEncoder(w).Encode("User not created in DB")
+		json.NewEncoder(w).Encode("Class not created in DB")
 		return
 	}
-	json.NewEncoder(w).Encode(createdUser)
+	json.NewEncoder(w).Encode(createdClass)
 	return
 }
 
-//GetUsers methd
-func (server *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
+//GetAllClass methd
+func (server *Server) GetAllClass(w http.ResponseWriter, r *http.Request) {
 
-	user := models.User{}
-	users, err := user.FindAllUsers(server.DB)
+	class := models.Class{}
+	classes, err := class.FindAllClasses(server.DB)
 	if err != nil {
 		json.NewEncoder(w).Encode("Error in getting value")
 		return
 	}
-	json.NewEncoder(w).Encode(users)
+	json.NewEncoder(w).Encode(classes)
 }
 
-//GetUser method
-func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
+//GetClass method
+func (server *Server) GetClass(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	uid, err := strconv.ParseUint(vars["id"], 10, 32)
@@ -70,17 +70,17 @@ func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
 	}
-	user := models.User{}
-	userGotten, err := user.FindUserByID(server.DB, uint32(uid))
+	class := models.Class{}
+	classGotten, err := class.FindClassByID(server.DB, uint32(uid))
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
 	}
-	responses.JSON(w, http.StatusOK, userGotten)
+	responses.JSON(w, http.StatusOK, classGotten)
 }
 
-//UpdateUser Method
-func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
+//UpdateClass Method
+func (server *Server) UpdateClass(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	uid, err := strconv.ParseUint(vars["id"], 10, 32)
 	if err != nil {
@@ -94,27 +94,27 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := models.User{}
-	err = json.Unmarshal(body, &user)
+	class := models.Class{}
+	err = json.Unmarshal(body, &class)
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
 	}
 
-	updatedUser, err := user.UpdateUser(server.DB, uint32(uid))
+	updatedClass, err := class.UpdateClass(server.DB, uint32(uid))
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
 	}
-	responses.JSON(w, http.StatusOK, updatedUser)
-	json.NewEncoder(w).Encode("User Updated")
+	responses.JSON(w, http.StatusOK, updatedClass)
+	json.NewEncoder(w).Encode("Class Updated")
 }
 
-// DeleteUser method
-func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
+// DeleteClass method
+func (server *Server) DeleteClass(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-	user := models.User{}
+	class := models.Class{}
 
 	uid, err := strconv.ParseUint(vars["id"], 10, 32)
 	if err != nil {
@@ -122,11 +122,11 @@ func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = user.DeleteUser(server.DB, uint32(uid))
+	_, err = class.DeleteClass(server.DB, uint32(uid))
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
 	}
 	responses.JSON(w, http.StatusNoContent, "")
-	json.NewEncoder(w).Encode("User Deleted")
+	json.NewEncoder(w).Encode("Class Deleted")
 }

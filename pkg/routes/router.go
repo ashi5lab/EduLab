@@ -23,6 +23,10 @@ func (server *Server) InitializeRoutes() {
 	server.Router.HandleFunc("/login", middlewares.SetMiddlewareJSON(server.Handler.Login)).Methods("POST")
 	// User Route
 	server.AddUserRouters()
+	//Student route
+	server.AddStudentRouters()
+	// class Route
+	server.AddClassRouters()
 
 }
 

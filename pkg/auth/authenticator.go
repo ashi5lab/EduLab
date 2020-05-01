@@ -11,6 +11,7 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
+//CreateToken function
 func CreateToken(user_id uint32) (string, error) {
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
@@ -21,6 +22,7 @@ func CreateToken(user_id uint32) (string, error) {
 
 }
 
+//ValidateToken function
 func ValidateToken(r *http.Request) error {
 	tokenString := ExtractToken(r)
 	_, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
@@ -35,6 +37,7 @@ func ValidateToken(r *http.Request) error {
 	return nil
 }
 
+//ExtractToken function
 func ExtractToken(r *http.Request) string {
 	keys := r.URL.Query()
 	token := keys.Get("token")
@@ -48,6 +51,7 @@ func ExtractToken(r *http.Request) string {
 	return ""
 }
 
+//ExtractTokenUserId function
 func ExtractTokenUserId(r *http.Request) (uint32, error) {
 
 	tokenString := ExtractToken(r)
