@@ -6,12 +6,13 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+//Class Struct
 type Class struct {
-	ClassID   uint32 `gorm:"primary_key;AUTO_INCREMENT" json:"ClassID"`
-	Standard  string `gorm:"size:50;not null;" json:"Standard"`
-	Division  string `gorm:"size:40;not null;" json:"Division"`
-	Year      int    `gorm:"not null;" json:"Year"`
-	TeacherID int    `gorm:"foreignkey:TeacherID;association_foreignkey:TeacherID" json:"TeacherID"`
+	ClassID  uint32    `gorm:"primary_key;AUTO_INCREMENT" json:"ClassID"`
+	Standard string    `gorm:"size:50;not null;" json:"Standard"`
+	Division string    `gorm:"size:40;not null;" json:"Division"`
+	Year     int       `gorm:"not null;" json:"Year"`
+	Teacher  []Teacher `gorm:"foreignkey:ClassID;association_foreignkey:ClassID" json:"Teacher"`
 }
 
 //SaveClass method
@@ -26,11 +27,11 @@ func (c *Class) SaveClass(db *gorm.DB) (*Class, error) {
 
 }
 
-//FindAllClasss method
+//FindAllClasses method
 func (c *Class) FindAllClasses(db *gorm.DB) (*[]Class, error) {
 	var err error
 	classes := []Class{}
-	err = db.Debug().Model(&Class{}).Limit(100).Find(&classes).Error
+	err = db.Debug().Preload("Teacher").Model(&Class{}).Limit(100).Find(&classes).Error
 
 	if err != nil {
 		return &[]Class{}, err
