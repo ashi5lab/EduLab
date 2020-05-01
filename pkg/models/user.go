@@ -13,8 +13,8 @@ import (
 
 //User struct
 type User struct {
-	UserID    uint32    `gorm:"primary_key;auto_increment" json:"id"`
-	UserName  string    `gorm:"size:40;not null;unique" json:"username"`
+	UserID    uint32    `gorm:"primary_key;AUTO_INCREMENT" json:"id"`
+	UserName  string    `gorm:"size:40;not null;" json:"username"`
 	Email     string    `gorm:"size:50;not null;unique" json:"email"`
 	RoleID    int       `gorm:"not null;" json:"roleid"`
 	Password  string    `gorm:"size:100;not null;" json:"_"`
@@ -25,19 +25,35 @@ type User struct {
 	UpdatedOn time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"_"`
 }
 
+type Message struct {
+	Message string
+	Token   string
+}
+
 //Hash function
 func Hash(password string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+}
+func VerifyPassword(hashedPassword, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+}
+
+//BeforeSave
+func (u *User) BeforeSave() error {
+	hashedPassword, err := Hash(u.Password)
+	if err != nil {
+		return err
+	}
+	u.Password = string(hashedPassword)
+	return nil
 }
 
 //Prepare function
 func (u *User) Prepare() {
 	u.UserName = html.EscapeString(strings.TrimSpace(u.UserName))
 	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
-
-	// hashedPassword, _ := Hash(u.Password)
-	// u.Password = string(hashedPassword)
-
+	u.CreatedOn = time.Now()
+	u.UpdatedOn = time.Now()
 }
 
 //SaveUser method
