@@ -13,16 +13,19 @@ import (
 
 //User struct
 type User struct {
-	UserID    uint32    `gorm:"primary_key;AUTO_INCREMENT" json:"id"`
-	UserName  string    `gorm:"size:40;not null;" json:"username"`
-	Email     string    `gorm:"size:50;not null;unique" json:"email"`
-	RoleID    int       `gorm:"not null;" json:"roleid"`
-	Password  string    `gorm:"size:100;not null;" json:"_"`
-	IsDeleted bool      `gorm:"default:false" json:"_"`
-	CreatedBy int       `json:"_"`
-	CreatedOn time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"_"`
-	UpdatedBy int       `json:"_"`
-	UpdatedOn time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"_"`
+	UserID      int       `gorm:"primary_key;AUTO_INCREMENT" json:"UserID"`
+	UserName    string    `gorm:"size:40;not null;" json:"UserName"`
+	RoleID      int       `gorm:"ClassID:RoleID;association_foreignkey:RoleID" json:"RoleID"`
+	PhoneNumber string    `gorm:"size:20;not null;" json:"PhoneNumber"`
+	Email       string    `gorm:"size:50;not null;unique" json:"Email"`
+	DOB         time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"DOB"`
+	Gender      string    `gorm:"size:10;not null" json:"Gender"`
+	Password    string    `gorm:"size:100;not null;" json:"Password"`
+	IsDeleted   bool      `gorm:"default:false" json:"_"`
+	CreatedBy   int       `json:"_"`
+	CreatedOn   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"_"`
+	UpdatedBy   int       `json:"_"`
+	UpdatedOn   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"_"`
 }
 
 // Message struct
@@ -55,6 +58,8 @@ func (u *User) BeforeSave() error {
 func (u *User) Prepare() {
 	u.UserName = html.EscapeString(strings.TrimSpace(u.UserName))
 	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
+	hashedPassword, _ := Hash(u.Password)
+	u.Password = string(hashedPassword)
 	u.CreatedOn = time.Now()
 	u.UpdatedOn = time.Now()
 }
