@@ -2,17 +2,23 @@ package models
 
 import (
 	"errors"
+	"time"
 
 	"github.com/jinzhu/gorm"
 )
 
 //Class Struct
 type Class struct {
-	ClassID  uint32    `gorm:"primary_key;AUTO_INCREMENT" json:"ClassID"`
-	Standard string    `gorm:"size:50;not null;" json:"Standard"`
-	Division string    `gorm:"size:40;not null;" json:"Division"`
-	Year     int       `gorm:"not null;" json:"Year"`
-	Teacher  []Teacher `gorm:"foreignkey:ClassID;association_foreignkey:ClassID" json:"Teacher"`
+	ClassID   uint32    `gorm:"primary_key;AUTO_INCREMENT" json:"ClassID"`
+	Standard  string    `gorm:"size:50;not null;" json:"Standard"`
+	Division  string    `gorm:"size:40;not null;" json:"Division"`
+	Year      int       `gorm:"not null;" json:"Year"`
+	Teacher   []Teacher `gorm:"foreignkey:ClassID;association_foreignkey:ClassID" json:"Teacher"`
+	IsDeleted bool      `gorm:"default:false" json:"-"`
+	CreatedBy int       `json:"-"`
+	CreatedOn time.Time `gorm:"default:CURRENT_TIMESTAMP" `
+	UpdatedBy int       `json:"-"`
+	UpdatedOn time.Time `gorm:"default:CURRENT_TIMESTAMP" `
 }
 
 //SaveClass method

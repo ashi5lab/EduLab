@@ -10,7 +10,7 @@ import (
 //Student struct
 type Student struct {
 	StudentID                 int       `gorm:"primary_key;AUTO_INCREMENT" json:"StudentID"`
-	UserID                    int       `gorm:"foreignkey:UserID;association_foreignkey:UserID" json:"UserID"`
+	UserID                    int       `gorm:not null;"`
 	StudentAdmno              int       `gorm:"not null;unique" json:"StudentAdmno"`
 	StudentSlno               int       `gorm:"not null;unique" json:"StudentSlno"`
 	StudentAppno              int       `gorm:"not null;unique" json:"StudentAppno"`
@@ -26,10 +26,12 @@ type Student struct {
 	StudentLingMinDesc        string    `gorm:"size:50;" json:"StudentLingMinDesc"`
 	StudentDOA                time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"StudentDOA"`
 	StudentAdmissionCategory  string    `gorm:"size:50;" json:"StudentAdmissionCategory"`
-	CreatedBy                 int       `json:"_"`
-	CreatedOn                 time.Time `gorm:"default:CURRENT_TIMESTAMP" json:""`
-	UpdatedBy                 int       `json:""`
-	UpdatedOn                 time.Time `gorm:"default:CURRENT_TIMESTAMP" json:""`
+	IsDeleted                 bool      `gorm:"default:false" json:"-"`
+	CreatedBy                 int       `json:"-"`
+	CreatedOn                 time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"-"`
+	UpdatedBy                 int       `json:"-"`
+	UpdatedOn                 time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"-"`
+	Users                     User      `gorm:"foreignkey:UserID;association_foreignkey:UserID"`
 }
 
 //Prepare function
@@ -58,7 +60,7 @@ func (s *Student) SaveStudent(db *gorm.DB) (*Student, error) {
 func (s *Student) FindAllStudents(db *gorm.DB) (*[]Student, error) {
 	var err error
 	students := []Student{}
-	err = db.Debug().Model(&Student{}).Limit(100).Find(&students).Error
+	err = db.Debug().Preload("Users", "is_deleted=?", false).Model(&Student{}).Limit(100).Find(&students).Error
 
 	if err != nil {
 		return &[]Student{}, err
