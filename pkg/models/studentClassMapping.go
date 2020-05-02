@@ -10,7 +10,7 @@ type StudentClassMapping struct {
 	StudentID      int       `gorm:"StudentID:UserID;association_foreignkey:StudentID" json:"StudentID"`
 	ClassID        int       `gorm:"ClassID:UserID;association_foreignkey:ClassID" json:"ClassID"`
 	CreatedBy      int       `json:"_"`
-	CreatedOn      time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"_"`
-	UpdatedBy      int       `json:"_"`
-	UpdatedOn      time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"_"`
+	CreatedOn      time.Time `gorm:"default:CURRENT_TIMESTAMP" `
+	UpdatedBy      int
+	UpdatedOn      time.Time `gorm:"default:CURRENT_TIMESTAMP" `
 }

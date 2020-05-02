@@ -22,10 +22,10 @@ type User struct {
 	Gender      string    `gorm:"size:10;not null" json:"Gender"`
 	Password    string    `gorm:"size:100;not null;" json:"Password"`
 	IsDeleted   bool      `gorm:"default:false" json:"_"`
-	CreatedBy   int       `json:"_"`
-	CreatedOn   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"_"`
-	UpdatedBy   int       `json:"_"`
-	UpdatedOn   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"_"`
+	CreatedBy   int
+	CreatedOn   time.Time `gorm:"default:CURRENT_TIMESTAMP" `
+	UpdatedBy   int
+	UpdatedOn   time.Time `gorm:"default:CURRENT_TIMESTAMP" `
 }
 
 // Message struct
@@ -120,7 +120,7 @@ func (u *User) UpdateUser(db *gorm.DB, uid uint32) (*User, error) {
 	return u, nil
 }
 
-//DeleteUser
+//DeleteUser function
 func (u *User) DeleteUser(db *gorm.DB, uid uint32) (int64, error) {
 	db = db.Debug().Model(&User{}).Where("user_id = ?", uid).Take(&User{}).UpdateColumns(
 		map[string]interface{}{

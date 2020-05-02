@@ -70,7 +70,7 @@ func (c *Class) UpdateClass(db *gorm.DB, cid uint32) (*Class, error) {
 	return c, nil
 }
 
-//DeleteClass
+//DeleteClass function
 func (c *Class) DeleteClass(db *gorm.DB, cid uint32) (int64, error) {
 	db = db.Debug().Model(&Class{}).Where("class_id = ?", cid).Take(&Class{}).UpdateColumns(
 		map[string]interface{}{
