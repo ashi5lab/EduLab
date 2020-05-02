@@ -63,7 +63,7 @@ func (c *Class) UpdateClass(db *gorm.DB, cid uint32) (*Class, error) {
 		return &Class{}, db.Error
 	}
 	//For display Updated Class
-	err := db.Debug().Model(&Class{}).Where("clas_id = ?", cid).Take(&c).Error
+	err := db.Debug().Model(&Class{}).Where("class_id = ?", cid).Take(&c).Error
 	if err != nil {
 		return &Class{}, err
 	}

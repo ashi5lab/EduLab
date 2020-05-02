@@ -11,6 +11,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
+//Server struct
 type Server struct {
 	DB *gorm.DB
 }
