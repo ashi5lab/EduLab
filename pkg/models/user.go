@@ -13,16 +13,25 @@ import (
 
 //User struct
 type User struct {
-	UserID    uint32    `gorm:"primary_key;auto_increment" json:"id"`
-	UserName  string    `gorm:"size:40;not null;unique" json:"username"`
-	Email     string    `gorm:"size:50;not null;unique" json:"email"`
-	RoleID    int       `gorm:"not null;" json:"role"`
-	Password  string    `gorm:"size:100;not null;" json:"_"`
-	IsDeleted bool      `gorm:"default:false" json:"_"`
-	CreatedBy int       `json:"_"`
-	CreatedOn time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"_"`
-	UpdatedBy int       `json:"_"`
-	UpdatedOn time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"_"`
+	UserID      int       `gorm:"primary_key;AUTO_INCREMENT" json:"UserID"`
+	UserName    string    `gorm:"size:40;not null;" json:"UserName"`
+	RoleID      int       `gorm:"ClassID:RoleID;association_foreignkey:RoleID" json:"RoleID"`
+	PhoneNumber string    `gorm:"size:20;not null;" json:"PhoneNumber"`
+	Email       string    `gorm:"size:50;not null;unique" json:"Email"`
+	DOB         time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"DOB"`
+	Gender      string    `gorm:"size:10;not null" json:"Gender"`
+	Password    string    `gorm:"size:100;not null;" json:"-"`
+	IsDeleted   bool      `gorm:"default:false" json:"-"`
+	CreatedBy   int       `json:"-"`
+	CreatedOn   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"-"`
+	UpdatedBy   int       `json:"-"`
+	UpdatedOn   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"-"`
+}
+
+// Message struct
+type Message struct {
+	Message string
+	Token   string
 }
 
 //Hash function
@@ -30,14 +39,29 @@ func Hash(password string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 }
 
+//VerifyPassword function
+func VerifyPassword(hashedPassword, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+}
+
+//BeforeSave function
+func (u *User) BeforeSave() error {
+	hashedPassword, err := Hash(u.Password)
+	if err != nil {
+		return err
+	}
+	u.Password = string(hashedPassword)
+	return nil
+}
+
 //Prepare function
 func (u *User) Prepare() {
 	u.UserName = html.EscapeString(strings.TrimSpace(u.UserName))
 	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
-
-	// hashedPassword, _ := Hash(u.Password)
-	// u.Password = string(hashedPassword)
-
+	hashedPassword, _ := Hash(u.Password)
+	u.Password = string(hashedPassword)
+	u.CreatedOn = time.Now()
+	u.UpdatedOn = time.Now()
 }
 
 //SaveUser method
@@ -96,7 +120,7 @@ func (u *User) UpdateUser(db *gorm.DB, uid uint32) (*User, error) {
 	return u, nil
 }
 
-//DeleteUser
+//DeleteUser function
 func (u *User) DeleteUser(db *gorm.DB, uid uint32) (int64, error) {
 	db = db.Debug().Model(&User{}).Where("user_id = ?", uid).Take(&User{}).UpdateColumns(
 		map[string]interface{}{

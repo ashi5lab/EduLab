@@ -11,6 +11,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
+//Server struct
 type Server struct {
 	DB *gorm.DB
 }
@@ -31,6 +32,6 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, D
 		}
 	}
 
-	server.DB.Debug().AutoMigrate(&models.User{}) //database migration
+	server.DB.Debug().AutoMigrate(&models.User{}, &models.Student{}, &models.Class{}, &models.StudentClassMap{}, &models.Role{}, &models.Teacher{}) //database migration
 
 }
