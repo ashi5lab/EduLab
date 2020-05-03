@@ -12,7 +12,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-//CreateStudentClassMapClassMap method
+//CreateStudentClassMap method
 func (server *Server) CreateStudentClassMap(w http.ResponseWriter, r *http.Request) {
 
 	body, err := ioutil.ReadAll(r.Body)

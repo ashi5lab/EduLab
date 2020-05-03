@@ -30,7 +30,7 @@ func (server *Server) InitializeRoutes() {
 	// Teacher Route
 	server.AddTeacherRouters()
 	//Student Class Map route
-	server.AddStudentCassMapRouters()
+	server.AddStudentClassMapRouters()
 
 }
 

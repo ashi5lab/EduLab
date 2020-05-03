@@ -21,7 +21,7 @@ type User struct {
 	DOB         time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"DOB"`
 	Gender      string    `gorm:"size:10;not null" json:"Gender"`
 	Password    string    `gorm:"size:100;not null;" json:"-"`
-	IsDeleted   bool      `gorm:"default:false" json:"-"`
+	IsDeleted   bool      `gorm:"default:false" json:"Status"`
 	CreatedBy   int       `json:"-"`
 	CreatedOn   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"-"`
 	UpdatedBy   int       `json:"-"`

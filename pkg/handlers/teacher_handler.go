@@ -65,18 +65,29 @@ func (server *Server) GetTeacher(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	uid, err := strconv.ParseUint(vars["id"], 10, 32)
-	if err != nil {
-		responses.ERROR(w, http.StatusBadRequest, err)
-		return
-	}
-	teacher := models.Teacher{}
-	teacherGotten, err := teacher.FindTeacherByID(server.DB, uint32(uid))
+	user := models.User{}
 
-	if err != nil {
-		responses.ERROR(w, http.StatusBadRequest, err)
-		return
+	if uid == uint64(user.UserID) && user.IsDeleted == true {
+
+		responses.JSON(w, http.StatusNoContent, "")
+		json.NewEncoder(w).Encode("User Not Found")
+
+	} else {
+
+		if err != nil {
+			responses.ERROR(w, http.StatusBadRequest, err)
+			return
+		}
+		teacher := models.Teacher{}
+		teacherGotten, err := teacher.FindTeacherByID(server.DB, uint32(uid))
+
+		if err != nil {
+			responses.ERROR(w, http.StatusBadRequest, err)
+			return
+		}
+		responses.JSON(w, http.StatusOK, teacherGotten)
 	}
-	responses.JSON(w, http.StatusOK, teacherGotten)
+
 }
 
 //UpdateTeacher function
@@ -110,25 +121,23 @@ func (server *Server) UpdateTeacher(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode("User Updated")
 }
 
-// // DeleteTeacher function
-// func (server *Server) DeleteTeacher(w http.ResponseWriter, r *http.Request) {
-// 	vars := mux.Vars(r)
+// DeleteTeacher function
+func (server *Server) DeleteTeacher(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
 
-// 	teacher := models.Teacher{}
+	teacher := models.Teacher{}
 
-// 	uid, err := strconv.ParseUint(vars["id"], 10, 32)
+	uid, err := strconv.ParseUint(vars["id"], 10, 32)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
 
-// 	if err != nil {
-// 		responses.ERROR(w, http.StatusBadRequest, err)
-// 		return
-// 	}
-
-// 	_, err = teacher.DeleteTeacher(server.DB, uint32(uid))
-// 	if err != nil {
-// 		responses.ERROR(w, http.StatusInternalServerError, err)
-// 		return
-// 	}
-// 	responses.JSON(w, http.StatusNoContent, "")
-// 	json.NewEncoder(w).Encode("User Deleted")
-
-// }
+	_, err = teacher.DeleteTeacher(server.DB, uint32(uid))
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+	responses.JSON(w, http.StatusNoContent, "")
+	json.NewEncoder(w).Encode("User Deleted")
+}

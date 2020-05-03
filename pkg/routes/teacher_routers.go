@@ -8,6 +8,6 @@ func (server *Server) AddTeacherRouters() {
 	server.Router.HandleFunc("/teacher", middlewares.SetMiddlewareJSON(server.Handler.GetAllTeacher)).Methods("GET")
 	server.Router.HandleFunc("/teacher/{id}", middlewares.SetMiddlewareJSON(server.Handler.GetTeacher)).Methods("GET")
 	server.Router.HandleFunc("/teacher/{id}", middlewares.SetMiddlewareJSON(server.Handler.UpdateTeacher)).Methods("PUT")
-	// server.Router.HandleFunc("/teacher/{id}", middlewares.SetMiddlewareJSON(server.Handler.DeleteTeacher)).Methods("DELETE")
+	server.Router.HandleFunc("/teacher/{id}", middlewares.SetMiddlewareJSON(server.Handler.DeleteTeacher)).Methods("DELETE")
 
 }
