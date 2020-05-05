@@ -2,23 +2,42 @@ package models
 
 import (
 	"errors"
+	"fmt"
+	"strings"
+	"time"
 
 	"github.com/jinzhu/gorm"
 )
 
 //Teacher struct
 type Teacher struct {
-	TeacherID     uint32 `gorm:"primary_key;AUTO_INCREMENT" json:"TeacherID"`
-	UserID        int    `gorm:"foreignkey:UserID;association_foreignkey:UserID"`
-	Qualification string `gorm:"size:30;" json:"Qualification"`
-	Subject       string `gorm:"size:20;" json:"Subject"`
-	ClassID       int    `gorm:""`
-	//IsDeleted     bool   `gorm:"default:false" json:"-"`
-	// CreatedBy     int       `json:"-"`
-	// CreatedOn     time.Time `gorm:"default:CURRENT_TIMESTAMP" `
-	// UpdatedBy     int       `json:"-"`
-	// UpdatedOn     time.Time `gorm:"default:CURRENT_TIMESTAMP" `
-	//Users User
+	TeacherID     uint32    `gorm:"primary_key;AUTO_INCREMENT" json:"TeacherID"`
+	UserID        int       `gorm:"not null;"`
+	Qualification string    `gorm:"size:30;" json:"Qualification"`
+	Subject       string    `gorm:"size:20;" json:"Subject"`
+	ClassID       int       `gorm:""`
+	IsDeleted     bool      `gorm:"default:false" json:"-"`
+	CreatedBy     int       `json:"-"`
+	CreatedOn     time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"-"`
+	UpdatedBy     int       `json:"-"`
+	UpdatedOn     time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"-"`
+	Users         User      `gorm:"foreignkey:UserID;association_foreignkey:UserID"`
+}
+
+//Validate method
+func (t *Teacher) Validate(action string) error {
+	switch strings.ToLower(action) {
+	case "update":
+		if t.UserID == 0 {
+			return errors.New("Required UserID")
+		}
+		return nil
+	default:
+		if t.UserID == 0 {
+			return errors.New("Required UserID")
+		}
+		return nil
+	}
 }
 
 //SaveTeacher function
@@ -37,29 +56,27 @@ func (t *Teacher) SaveTeacher(db *gorm.DB) (*Teacher, error) {
 func (t *Teacher) FindAllTeachers(db *gorm.DB) (*[]Teacher, error) {
 	var err error
 	teachers := []Teacher{}
-	//user := User{}
-
-	err = db.Debug(). /*Preload("Users", "is_deleted=?", false)*/ Model(&User{}).Where("is_deleted=?", false).Limit(100).Model(&Teacher{}).Error
+	err = db.Debug().Preload("Users", "is_deleted=?", false).Model(&Teacher{}).Limit(100).Find(&teachers).Error
 
 	if err != nil {
 		return &[]Teacher{}, err
 	}
-
 	return &teachers, nil
+
 }
 
 //FindTeacherByID function
 func (t *Teacher) FindTeacherByID(db *gorm.DB, uid uint32) (*Teacher, error) {
 	var err error
 	//user := User{}
-
-	err = db.Debug().Model(&User{}).Where("is_deleted=? ", false).Model(&Teacher{}).Where("user_id=? ", uid).Take(t).Error
+	fmt.Println()
+	err = db.Debug().Preload("Users", "is_deleted=?", false).Model(&Teacher{}).Where("user_id=? ", uid).Take(t).Error
 
 	if err != nil {
 		return &Teacher{}, err
 	}
 	if gorm.IsRecordNotFoundError(err) {
-		return &Teacher{}, errors.New("User Not Found")
+		return &Teacher{}, errors.New("Teacher Not Found")
 	}
 
 	return t, nil
@@ -76,7 +93,7 @@ func (t *Teacher) UpdateTeacher(db *gorm.DB, uid uint32) (*Teacher, error) {
 	}
 
 	//To display updated Teacher
-	err := db.Debug().Model(&Teacher{}).Where("user_id = ?", uid).Take(&t).Error
+	err := db.Debug().Preload("Users", "is_deleted=?", false).Model(&Teacher{}).Where("user_id=? ", uid).Take(t).Error
 	if err != nil {
 		return &Teacher{}, err
 	}

@@ -13,12 +13,13 @@ type Class struct {
 	Standard  string    `gorm:"size:50;not null;" json:"Standard"`
 	Division  string    `gorm:"size:40;not null;" json:"Division"`
 	Year      int       `gorm:"not null;" json:"Year"`
-	Teacher   []Teacher `gorm:"foreignkey:ClassID;association_foreignkey:ClassID" json:"Teacher"`
+	TeacherID int       `gorm:"not null;"`
+	Teacher   Teacher   `gorm:"foreignkey:TeacherID;association_foreignkey:TeacherID"`
 	IsDeleted bool      `gorm:"default:false" json:"-"`
 	CreatedBy int       `json:"-"`
-	CreatedOn time.Time `gorm:"default:CURRENT_TIMESTAMP" `
+	CreatedOn time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"-"`
 	UpdatedBy int       `json:"-"`
-	UpdatedOn time.Time `gorm:"default:CURRENT_TIMESTAMP" `
+	UpdatedOn time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"-"`
 }
 
 //SaveClass method
@@ -40,6 +41,7 @@ func (c *Class) FindAllClasses(db *gorm.DB) (*[]Class, error) {
 	err = db.Debug().Preload("Teacher").Model(&Class{}).Limit(100).Find(&classes).Error
 
 	if err != nil {
+		println(err)
 		return &[]Class{}, err
 	}
 	return &classes, nil

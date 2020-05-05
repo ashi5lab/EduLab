@@ -15,13 +15,13 @@ import (
 type User struct {
 	UserID      int       `gorm:"primary_key;AUTO_INCREMENT" json:"UserID"`
 	UserName    string    `gorm:"size:40;not null;" json:"UserName"`
-	RoleID      int       `gorm:"ClassID:RoleID;association_foreignkey:RoleID" json:"RoleID"`
+	RoleID      int       `gorm:not null;"`
 	PhoneNumber string    `gorm:"size:20;not null;" json:"PhoneNumber"`
 	Email       string    `gorm:"size:50;not null;unique" json:"Email"`
 	DOB         time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"DOB"`
 	Gender      string    `gorm:"size:10;not null" json:"Gender"`
 	Password    string    `gorm:"size:100;not null;" json:"-"`
-	IsDeleted   bool      `gorm:"default:false" json:"Status"`
+	IsDeleted   bool      `gorm:"default:false" json:"-"`
 	CreatedBy   int       `json:"-"`
 	CreatedOn   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"-"`
 	UpdatedBy   int       `json:"-"`

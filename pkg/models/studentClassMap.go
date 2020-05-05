@@ -15,7 +15,7 @@ type StudentClassMap struct {
 	IsDeleted      bool      `gorm:"default:false" json:"-"`
 	CreatedBy      int       `json:"-"`
 	UpdatedBy      int       `json:"-"`
-	UpdatedOn      time.Time `gorm:"default:CURRENT_TIMESTAMP" `
+	UpdatedOn      time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"-"`
 }
 
 //SaveStudentClassMap function

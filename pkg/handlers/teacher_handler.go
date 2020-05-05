@@ -38,6 +38,11 @@ func (server *Server) CreateTeacher(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
+	err = teacher.Validate("")
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
 
 	createdTeacher, err := teacher.SaveTeacher(server.DB)
 	if err != nil {
