@@ -27,6 +27,10 @@ func (server *Server) InitializeRoutes() {
 	server.AddStudentRouters()
 	// class Route
 	server.AddClassRouters()
+	// Teacher Route
+	server.AddTeacherRouters()
+	//Student Class Map route
+	server.AddStudentClassMapRouters()
 
 }
 

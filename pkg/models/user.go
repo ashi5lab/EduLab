@@ -13,16 +13,19 @@ import (
 
 //User struct
 type User struct {
-	UserID    uint32    `gorm:"primary_key;AUTO_INCREMENT" json:"id"`
-	UserName  string    `gorm:"size:40;not null;" json:"username"`
-	Email     string    `gorm:"size:50;not null;unique" json:"email"`
-	RoleID    int       `gorm:"not null;" json:"roleid"`
-	Password  string    `gorm:"size:100;not null;" json:"_"`
-	IsDeleted bool      `gorm:"default:false" json:"_"`
-	CreatedBy int       `json:"_"`
-	CreatedOn time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"_"`
-	UpdatedBy int       `json:"_"`
-	UpdatedOn time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"_"`
+	UserID      int       `gorm:"primary_key;AUTO_INCREMENT" json:"UserID"`
+	UserName    string    `gorm:"size:40;not null;" json:"UserName"`
+	RoleID      int       `gorm:not null;json:"RoleID"`
+	PhoneNumber string    `gorm:"size:20;not null;" json:"PhoneNumber"`
+	Email       string    `gorm:"size:50;not null;unique" json:"Email"`
+	DOB         time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"DOB"`
+	Gender      string    `gorm:"size:10;not null" json:"Gender"`
+	Password    string    `gorm:"size:100;not null;" json:"-"`
+	IsDeleted   bool      `gorm:"default:false" json:"-"`
+	CreatedBy   int       `json:"-"`
+	CreatedOn   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"-"`
+	UpdatedBy   int       `json:"-"`
+	UpdatedOn   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"-"`
 }
 
 // Message struct
@@ -39,6 +42,16 @@ func Hash(password string) ([]byte, error) {
 //VerifyPassword function
 func VerifyPassword(hashedPassword, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+}
+
+//BeforeSave function
+func (u *User) BeforeSave() error {
+	hashedPassword, err := Hash(u.Password)
+	if err != nil {
+		return err
+	}
+	u.Password = string(hashedPassword)
+	return nil
 }
 
 //Prepare function
