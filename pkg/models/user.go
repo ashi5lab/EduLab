@@ -58,27 +58,64 @@ func (u *User) Validate(action string) error {
 	case "create":
 		if u.UserName == "" {
 			return errors.New("Required UserName")
-		} else if len(u.UserName) < 8 {
+		}
+		if len(u.UserName) < 8 {
 			return errors.New("Username requires minimum 8 characters")
 
-		} else if u.RoleID == 0 {
+		}
+		if u.RoleID == 0 {
 			return errors.New("Required RoleID")
-		} else if u.PhoneNumber == "" {
+		}
+		if u.PhoneNumber == "" {
 			return errors.New("Required PhoneNumber")
-		} else if len(u.PhoneNumber) < 10 {
+		}
+		if len(u.PhoneNumber) < 10 {
 			return errors.New("Invalid Phone number")
-		} else if u.Email == "" {
+		}
+		if u.Email == "" {
 			return errors.New("Required Email")
-		} else if emailRe.MatchString(u.Email) == false {
+		}
+		if emailRe.MatchString(u.Email) == false {
 			return errors.New("Invalid Email")
 
-		} else if dobRe.MatchString(u.DOB.String()) == false {
+		}
+		if dobRe.MatchString(u.DOB.String()) == false {
 			return errors.New("Invalid Date Format")
 
-		} else if u.Gender == "" {
+		}
+		if u.Gender == "" {
 			return errors.New("Required Gender")
-		} else if u.Password == "" {
+		}
+		if u.Password == "" {
 			return errors.New("Required Password")
+		}
+		return nil
+
+	case "getUser":
+		if u.UserID == 0 {
+			return errors.New("Enter UserID")
+
+		}
+		return nil
+
+	case "getUsers":
+		if u.UserID == 0 {
+			return errors.New("Enter UserID")
+
+		}
+		return nil
+
+	case "update":
+		if u.UserID == 0 {
+			return errors.New("Enter UserID")
+
+		}
+		return nil
+
+	case "delete":
+		if u.UserID == 0 {
+			return errors.New("Enter UserID")
+
 		}
 		return nil
 	default:

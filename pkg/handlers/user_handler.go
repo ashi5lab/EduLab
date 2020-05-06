@@ -29,11 +29,8 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	user := models.User{}
 
-	err = user.Validate("create")
-
 	if err != nil {
-		responses.ERROR(w, http.StatusUnprocessableEntity, err)
-	} else {
+
 		err = json.Unmarshal(body, &user)
 		fmt.Println("User", user)
 		if err != nil {
@@ -44,8 +41,17 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 			}
 			return
 		}
+
 		fmt.Println(user.Password)
 		user.Prepare()
+
+		err = user.Validate("create")
+
+		if err != nil {
+			responses.ERROR(w, http.StatusUnprocessableEntity, err)
+			return
+		}
+
 		createdUser, err := user.SaveUser(server.DB)
 		if err != nil {
 			json.NewEncoder(w).Encode("User not created in DB")
@@ -67,6 +73,13 @@ func (server *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	json.NewEncoder(w).Encode(users)
+
+	err = user.Validate("getUser")
+
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+
+	}
 }
 
 //GetUser method
