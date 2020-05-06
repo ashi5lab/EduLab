@@ -28,25 +28,33 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user := models.User{}
-	err = json.Unmarshal(body, &user)
-	fmt.Println("User", user)
+
+	err = user.Validate("create")
+
 	if err != nil {
-		w.WriteHeader(500)
-		err := json.NewEncoder(w).Encode("Error Unmarshaling json")
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+	} else {
+		err = json.Unmarshal(body, &user)
+		fmt.Println("User", user)
 		if err != nil {
-			fmt.Fprintf(w, "%s", err.Error())
+			w.WriteHeader(500)
+			err := json.NewEncoder(w).Encode("Error Unmarshaling json")
+			if err != nil {
+				fmt.Fprintf(w, "%s", err.Error())
+			}
+			return
 		}
+		fmt.Println(user.Password)
+		user.Prepare()
+		createdUser, err := user.SaveUser(server.DB)
+		if err != nil {
+			json.NewEncoder(w).Encode("User not created in DB")
+			return
+		}
+		json.NewEncoder(w).Encode(createdUser)
 		return
 	}
-	fmt.Println(user.Password)
-	user.Prepare()
-	createdUser, err := user.SaveUser(server.DB)
-	if err != nil {
-		json.NewEncoder(w).Encode("User not created in DB")
-		return
-	}
-	json.NewEncoder(w).Encode(createdUser)
-	return
+
 }
 
 //GetUsers methd

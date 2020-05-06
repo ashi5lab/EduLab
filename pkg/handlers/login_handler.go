@@ -54,5 +54,5 @@ func (server *Server) SignIn(email, password string) (string, error) {
 		return "", err
 	}
 
-	return auth.CreateToken(user.UserID)
+	return auth.CreateToken(uint32(user.UserID))
 }
