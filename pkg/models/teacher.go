@@ -27,9 +27,48 @@ type Teacher struct {
 //Validate method
 func (t *Teacher) Validate(action string) error {
 	switch strings.ToLower(action) {
-	case "update":
+	case "create":
 		if t.UserID == 0 {
 			return errors.New("Required UserID")
+		}
+
+		if t.Qualification == "" {
+			return errors.New("Required Qualification")
+		}
+		if t.Subject == "" {
+			return errors.New("Required Subject")
+		}
+
+		if t.ClassID == 0 {
+			return errors.New("Required ClassID")
+		}
+		return nil
+
+	case "getTeacher":
+		if t.UserID == 0 {
+			return errors.New("Enter UserID")
+
+		}
+		return nil
+
+	// case "getTeachers":
+	// 	if t.UserID == 0 {
+	// 		return errors.New("Enter UserID")
+
+	// 	}
+	// 	return nil
+
+	case "update":
+		if t.UserID == 0 {
+			return errors.New("Enter UserID")
+
+		}
+		return nil
+
+	case "delete":
+		if t.UserID == 0 {
+			return errors.New("Enter UserID")
+
 		}
 		return nil
 	default:
@@ -37,7 +76,9 @@ func (t *Teacher) Validate(action string) error {
 			return errors.New("Required UserID")
 		}
 		return nil
+
 	}
+
 }
 
 //SaveTeacher function

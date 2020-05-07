@@ -52,7 +52,7 @@ func (u *User) Validate(action string) error {
 	emailRe := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 
 	//Regular expression for Date
-	dobRe := regexp.MustCompile("(0?[1-9]|[12][0-9]|3[01])/(0?[1-9]|1[012])/((19|20)\\d\\d)")
+	//dobRe := regexp.MustCompile("(0?[1-9]|[12][0-9]|3[01])/(0?[1-9]|1[012])/((19|20)\\d\\d)^(0?[1-9]|1[012]):([0-5][0-9])[ap]m$")
 
 	switch strings.ToLower(action) {
 	case "create":
@@ -79,10 +79,10 @@ func (u *User) Validate(action string) error {
 			return errors.New("Invalid Email")
 
 		}
-		if dobRe.MatchString(u.DOB.String()) == false {
-			return errors.New("Invalid Date Format")
+		// if dobRe.MatchString(u.DOB.String()) == false {
+		// 	return errors.New("Invalid Date Format")
 
-		}
+		// }
 		if u.Gender == "" {
 			return errors.New("Required Gender")
 		}
@@ -119,10 +119,10 @@ func (u *User) Validate(action string) error {
 		}
 		return nil
 	default:
-		{
-			return errors.New("Something went wrong ")
-
+		if u.UserID == 0 {
+			return errors.New("Required UserID")
 		}
+		return nil
 
 	}
 

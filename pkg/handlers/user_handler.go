@@ -29,37 +29,34 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	user := models.User{}
 
+	err = json.Unmarshal(body, &user)
+	fmt.Println("User", user)
 	if err != nil {
-
-		err = json.Unmarshal(body, &user)
-		fmt.Println("User", user)
+		w.WriteHeader(500)
+		err := json.NewEncoder(w).Encode("Error Unmarshaling json")
 		if err != nil {
-			w.WriteHeader(500)
-			err := json.NewEncoder(w).Encode("Error Unmarshaling json")
-			if err != nil {
-				fmt.Fprintf(w, "%s", err.Error())
-			}
-			return
+			fmt.Fprintf(w, "%s", err.Error())
 		}
-
-		fmt.Println(user.Password)
-		user.Prepare()
-
-		err = user.Validate("create")
-
-		if err != nil {
-			responses.ERROR(w, http.StatusUnprocessableEntity, err)
-			return
-		}
-
-		createdUser, err := user.SaveUser(server.DB)
-		if err != nil {
-			json.NewEncoder(w).Encode("User not created in DB")
-			return
-		}
-		json.NewEncoder(w).Encode(createdUser)
 		return
 	}
+
+	fmt.Println(user.Password)
+	user.Prepare()
+
+	err = user.Validate("create")
+
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+
+	createdUser, err := user.SaveUser(server.DB)
+	if err != nil {
+		json.NewEncoder(w).Encode("User not created in DB")
+		return
+	}
+	json.NewEncoder(w).Encode(createdUser)
+	return
 
 }
 
@@ -74,12 +71,6 @@ func (server *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(users)
 
-	err = user.Validate("getUser")
-
-	if err != nil {
-		responses.ERROR(w, http.StatusUnprocessableEntity, err)
-
-	}
 }
 
 //GetUser method
@@ -92,6 +83,13 @@ func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	user := models.User{}
+	err = user.Validate("getUser")
+
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+
 	userGotten, err := user.FindUserByID(server.DB, uint32(uid))
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
@@ -122,6 +120,13 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	err = user.Validate("update")
+
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+
 	updatedUser, err := user.UpdateUser(server.DB, uint32(uid))
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
@@ -140,6 +145,13 @@ func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	uid, err := strconv.ParseUint(vars["id"], 10, 32)
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	err = user.Validate("delete")
+
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
 

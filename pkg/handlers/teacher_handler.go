@@ -38,7 +38,7 @@ func (server *Server) CreateTeacher(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	err = teacher.Validate("")
+	err = teacher.Validate("create")
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
@@ -84,6 +84,12 @@ func (server *Server) GetTeacher(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		teacher := models.Teacher{}
+
+		err = teacher.Validate("create")
+		if err != nil {
+			responses.ERROR(w, http.StatusUnprocessableEntity, err)
+			return
+		}
 		teacherGotten, err := teacher.FindTeacherByID(server.DB, uint32(uid))
 
 		if err != nil {
@@ -117,6 +123,12 @@ func (server *Server) UpdateTeacher(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	err = teacher.Validate("update")
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+
 	updatedTeacher, err := teacher.UpdateTeacher(server.DB, uint32(uid))
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
@@ -135,6 +147,12 @@ func (server *Server) DeleteTeacher(w http.ResponseWriter, r *http.Request) {
 	uid, err := strconv.ParseUint(vars["id"], 10, 32)
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	err = teacher.Validate("delete")
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
 
