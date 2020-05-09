@@ -21,7 +21,7 @@ type User struct {
 	Email       string    `gorm:"size:50;not null;unique" json:"Email"`
 	DOB         time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"DOB"`
 	Gender      string    `gorm:"size:10;not null" json:"Gender"`
-	Password    string    `gorm:"size:100;not null;" json:"-"`
+	Password    string    `gorm:"size:100;not null;"`
 	IsDeleted   bool      `gorm:"default:false" json:"-"`
 	CreatedBy   int       `json:"-"`
 	CreatedOn   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"-"`
@@ -142,8 +142,8 @@ func (u *User) BeforeSave() error {
 func (u *User) Prepare() {
 	u.UserName = html.EscapeString(strings.TrimSpace(u.UserName))
 	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
-	hashedPassword, _ := Hash(u.Password)
-	u.Password = string(hashedPassword)
+	// hashedPassword, _ := Hash(u.Password)
+	// u.Password = string(hashedPassword)
 	u.CreatedOn = time.Now()
 	u.UpdatedOn = time.Now()
 }
@@ -152,7 +152,7 @@ func (u *User) Prepare() {
 func (u *User) SaveUser(db *gorm.DB) (*User, error) {
 
 	var err error
-	err = db.Debug().Create(&u).Error
+	err = db.Debug().Model(&User{}).Create(&u).Error
 	if err != nil {
 		return &User{}, err
 	}
