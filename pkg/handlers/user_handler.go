@@ -75,14 +75,14 @@ func (server *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
 
 //GetUser method
 func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
-
+	user := models.User{}
 	vars := mux.Vars(r)
 	uid, err := strconv.ParseUint(vars["id"], 10, 32)
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
 	}
-	user := models.User{}
+	user.UserID = int(uid)
 	err = user.Validate("getUser")
 
 	if err != nil {
@@ -91,6 +91,7 @@ func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userGotten, err := user.FindUserByID(server.DB, uint32(uid))
+
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return

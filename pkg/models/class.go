@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -15,6 +16,7 @@ type Class struct {
 	Year      int       `gorm:"not null;" json:"Year"`
 	TeacherID int       `gorm:"not null;"`
 	Teacher   Teacher   `gorm:"foreignkey:TeacherID;association_foreignkey:TeacherID"`
+	User      User      `gorm:"foreignkey:UserID;association_foreignkey:UserID"`
 	IsDeleted bool      `gorm:"default:false" json:"-"`
 	CreatedBy int       `json:"-"`
 	CreatedOn time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"-"`
@@ -31,14 +33,66 @@ func (c *Class) SaveClass(db *gorm.DB) (*Class, error) {
 		return &Class{}, err
 	}
 	return c, nil
+}
 
+//Validate method
+func (c *Class) Validate(action string) error {
+
+	switch strings.ToLower(action) {
+	case "create":
+		if c.Standard == "" {
+			return errors.New("Required Standard")
+		}
+
+		if c.Division == "" {
+			return errors.New("Required Division")
+		}
+		if c.Year == 0 {
+			return errors.New("Required Year")
+		}
+
+		if c.TeacherID == 0 {
+			return errors.New("Required Teacher ID")
+		}
+		return nil
+
+	case "getClass":
+		if c.ClassID == 0 {
+			return errors.New("Enter UserID")
+
+		}
+		return nil
+
+	case "update":
+		if c.ClassID == 0 {
+			return errors.New("Enter ClassID")
+
+		}
+		return nil
+
+	case "delete":
+		if c.ClassID == 0 {
+			return errors.New("Enter ClassID")
+
+		}
+		return nil
+
+	default:
+		if c.ClassID == 0 {
+			return errors.New("Enter ClassID")
+
+		}
+		return nil
+
+	}
 }
 
 //FindAllClasses method
 func (c *Class) FindAllClasses(db *gorm.DB) (*[]Class, error) {
 	var err error
 	classes := []Class{}
-	err = db.Debug().Preload("Teacher").Model(&Class{}).Limit(100).Find(&classes).Error
+
+	err = db.Debug().Preload("Teacher", "is_deleted=?", false).Model(&Class{}).Limit(100).Find(&classes).Error
 
 	if err != nil {
 		println(err)
@@ -52,7 +106,7 @@ func (c *Class) FindAllClasses(db *gorm.DB) (*[]Class, error) {
 func (c *Class) FindClassByID(db *gorm.DB, cid uint32) (*Class, error) {
 	var err error
 
-	err = db.Debug().Model(&Class{}).Where("class_id = ?", cid).Take(c).Error
+	err = db.Debug(). /*Preload("Teacher", "is_deleted=?", false)*/ Model(&Class{}).Where("class_id = ?", cid).Take(c).Error
 
 	if err != nil {
 		return &Class{}, err
