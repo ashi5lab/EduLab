@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -42,6 +43,77 @@ func (s *Student) Prepare() {
 	// u.Password = string(hashedPassword)
 	// u.CreatedOn = time.Now()
 	// u.UpdatedOn = time.Now()
+}
+
+//Validate method
+func (s *Student) Validate(action string) error {
+
+	switch strings.ToLower(action) {
+	case "create":
+		if s.UserID == 0 {
+			return errors.New("Required UserID")
+		}
+
+		if s.StudentAdmno == 0 {
+			return errors.New("Required StudentAdmno")
+		}
+		if s.StudentSlno == 0 {
+			return errors.New("Required StudentSlno")
+		}
+
+		if s.StudentAppno == 0 {
+			return errors.New("Required StudentAppno")
+		}
+
+		if s.StudentGuardianName == "" {
+			return errors.New("Required StudentGuardianName")
+		}
+		if s.StudentGuardianOccupation == "" {
+			return errors.New("Required StudentGuardianOccupation")
+		}
+		if s.StudentGuardianRelation == "" {
+			return errors.New("Required StudentGuardianRelation")
+		}
+		if s.StudentAddress == "" {
+			return errors.New("Required StudentAddress")
+		}
+		if s.StudentReligion == "" {
+			return errors.New("Required StudentReligion")
+		}
+		if s.StudentCaste == "" {
+			return errors.New("Required StudentCaste")
+		}
+		if s.StudentCategory == "" {
+			return errors.New("Required StudentCategory")
+		}
+		if s.StudentCaste == "" {
+			return errors.New("Required StudentCaste")
+		}
+		if s.StudentCaste == "" {
+			return errors.New("Required StudentCaste")
+		}
+		if s.StudentCaste == "" {
+			return errors.New("Required StudentCaste")
+		}
+		return nil
+
+	default:
+		if s.UserID == 0 {
+			return errors.New("Required UserID")
+		}
+		return nil
+
+	}
+}
+
+//ValidateID method
+func (s *Student) ValidateID(id int) error {
+
+	if id == 0 {
+		return errors.New("Required UserID")
+
+	}
+	return nil
 }
 
 //SaveStudent method

@@ -85,7 +85,7 @@ func (server *Server) GetTeacher(w http.ResponseWriter, r *http.Request) {
 		}
 		teacher := models.Teacher{}
 
-		err = teacher.Validate("create")
+		err = teacher.ValidateID(int(uid))
 		if err != nil {
 			responses.ERROR(w, http.StatusUnprocessableEntity, err)
 			return
@@ -123,7 +123,7 @@ func (server *Server) UpdateTeacher(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = teacher.Validate("update")
+	err = teacher.ValidateID(int(uid))
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
@@ -150,7 +150,7 @@ func (server *Server) DeleteTeacher(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = teacher.Validate("delete")
+	err = teacher.ValidateID(int(uid))
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return

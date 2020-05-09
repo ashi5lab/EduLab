@@ -78,7 +78,7 @@ func (server *Server) GetClass(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = class.Validate("getClass")
+	err = class.ValidateID(int(cid))
 
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
@@ -96,12 +96,12 @@ func (server *Server) GetClass(w http.ResponseWriter, r *http.Request) {
 //UpdateClass Method
 func (server *Server) UpdateClass(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	uid, err := strconv.ParseUint(vars["id"], 10, 32)
+	cid, err := strconv.ParseUint(vars["id"], 10, 32)
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
 	}
-	fmt.Println(uid)
+	fmt.Println(cid)
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
@@ -115,14 +115,14 @@ func (server *Server) UpdateClass(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = class.Validate("update")
+	err = class.ValidateID(int(cid))
 
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
 
-	updatedClass, err := class.UpdateClass(server.DB, uint32(uid))
+	updatedClass, err := class.UpdateClass(server.DB, uint32(cid))
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
@@ -137,20 +137,20 @@ func (server *Server) DeleteClass(w http.ResponseWriter, r *http.Request) {
 
 	class := models.Class{}
 
-	uid, err := strconv.ParseUint(vars["id"], 10, 32)
+	cid, err := strconv.ParseUint(vars["id"], 10, 32)
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
 	}
 
-	err = class.Validate("delete")
+	err = class.ValidateID(int(cid))
 
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
 
-	_, err = class.DeleteClass(server.DB, uint32(uid))
+	_, err = class.DeleteClass(server.DB, uint32(cid))
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return

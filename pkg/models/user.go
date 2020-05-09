@@ -91,33 +91,6 @@ func (u *User) Validate(action string) error {
 		}
 		return nil
 
-	case "getUser":
-		if u.UserID == 0 {
-			return errors.New("Enter UserID")
-
-		}
-		return nil
-
-	case "getUsers":
-		if u.UserID == 0 {
-			return errors.New("Enter UserID")
-
-		}
-		return nil
-
-	case "update":
-		if u.UserID == 0 {
-			return errors.New("Enter UserID")
-
-		}
-		return nil
-
-	case "delete":
-		if u.UserID == 0 {
-			return errors.New("Enter UserID")
-
-		}
-		return nil
 	default:
 		if u.UserID == 0 {
 			return errors.New("Required UserID")
@@ -126,6 +99,16 @@ func (u *User) Validate(action string) error {
 
 	}
 
+}
+
+//ValidateID method
+func (u *User) ValidateID(id int) error {
+
+	if id == 0 {
+		return errors.New("Required UserID")
+
+	}
+	return nil
 }
 
 //BeforeSave function

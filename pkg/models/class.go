@@ -56,27 +56,6 @@ func (c *Class) Validate(action string) error {
 		}
 		return nil
 
-	case "getClass":
-		if c.ClassID == 0 {
-			return errors.New("Enter UserID")
-
-		}
-		return nil
-
-	case "update":
-		if c.ClassID == 0 {
-			return errors.New("Enter ClassID")
-
-		}
-		return nil
-
-	case "delete":
-		if c.ClassID == 0 {
-			return errors.New("Enter ClassID")
-
-		}
-		return nil
-
 	default:
 		if c.ClassID == 0 {
 			return errors.New("Enter ClassID")
@@ -85,6 +64,16 @@ func (c *Class) Validate(action string) error {
 		return nil
 
 	}
+}
+
+//ValidateID method
+func (c *Class) ValidateID(id int) error {
+
+	if id == 0 {
+		return errors.New("Required ClassID")
+
+	}
+	return nil
 }
 
 //FindAllClasses method

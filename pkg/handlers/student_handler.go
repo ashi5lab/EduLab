@@ -38,6 +38,14 @@ func (server *Server) CreateStudent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	student.Prepare()
+
+	err = student.Validate("create")
+
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+
 	createdStudent, err := student.SaveStudent(server.DB)
 	if err != nil {
 		json.NewEncoder(w).Encode("Student not created in DB")
@@ -69,6 +77,13 @@ func (server *Server) GetStudent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	student := models.Student{}
+
+	err = student.ValidateID(int(uid))
+
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
 	userGotten, err := student.FindStudentByID(server.DB, uint32(uid))
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
@@ -96,6 +111,13 @@ func (server *Server) UpdateStudent(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(body, &student)
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	err = student.ValidateID(int(uid))
+
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
 

@@ -44,33 +44,6 @@ func (t *Teacher) Validate(action string) error {
 		}
 		return nil
 
-	case "getTeacher":
-		if t.UserID == 0 {
-			return errors.New("Enter UserID")
-
-		}
-		return nil
-
-	// case "getTeachers":
-	// 	if t.UserID == 0 {
-	// 		return errors.New("Enter UserID")
-
-	// 	}
-	// 	return nil
-
-	case "update":
-		if t.UserID == 0 {
-			return errors.New("Enter UserID")
-
-		}
-		return nil
-
-	case "delete":
-		if t.UserID == 0 {
-			return errors.New("Enter UserID")
-
-		}
-		return nil
 	default:
 		if t.UserID == 0 {
 			return errors.New("Required UserID")
@@ -79,6 +52,16 @@ func (t *Teacher) Validate(action string) error {
 
 	}
 
+}
+
+//ValidateID method
+func (t *Teacher) ValidateID(id int) error {
+
+	if id == 0 {
+		return errors.New("Required UserID")
+
+	}
+	return nil
 }
 
 //SaveTeacher function

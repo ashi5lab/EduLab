@@ -81,8 +81,8 @@ func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
 	}
-	user.UserID = int(uid)
-	err = user.Validate("getUser")
+
+	err = user.ValidateID(int(uid))
 
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
@@ -120,7 +120,7 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = user.Validate("update")
+	err = user.ValidateID(int(uid))
 
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
@@ -148,7 +148,7 @@ func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = user.Validate("delete")
+	err = user.ValidateID(int(uid))
 
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
