@@ -29,7 +29,6 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	user := models.User{}
 	err = json.Unmarshal(body, &user)
-	fmt.Println("User", user)
 	if err != nil {
 		w.WriteHeader(500)
 		err := json.NewEncoder(w).Encode("Error Unmarshaling json")
@@ -38,7 +37,6 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	fmt.Println(user.Password)
 	user.Prepare()
 	createdUser, err := user.SaveUser(server.DB)
 	if err != nil {
