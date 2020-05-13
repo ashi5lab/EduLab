@@ -20,7 +20,7 @@ type Server struct {
 func (server *Server) InitializeRoutes() {
 	server.Router = mux.NewRouter()
 
-	server.Router.HandleFunc("/login", middlewares.SetMiddlewareJSON(server.Handler.Login)).Methods("POST")
+	server.Router.HandleFunc("/login", middlewares.SetMiddlewareJSON(server.Handler.Login)).Methods("POST", "OPTIONS")
 	// User Route
 	server.AddUserRouters()
 	//Student route
