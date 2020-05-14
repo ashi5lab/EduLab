@@ -31,6 +31,8 @@ func (server *Server) InitializeRoutes() {
 	server.AddTeacherRouters()
 	//Student Class Map route
 	server.AddStudentClassMapRouters()
+	//Forgot Password route
+	server.AddForgotPasswordRouters()
 
 }
 
