@@ -26,20 +26,20 @@ func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := server.SignIn(user.Email, user.Password)
+	token, userid, username, err := server.SignIn(user.Email, user.Password)
 	if err != nil {
 		formattedError := formaterror.FormatError(err.Error())
 		responses.ERROR(w, http.StatusUnprocessableEntity, formattedError)
 		return
 	}
 
-	m := models.Message{Message: "Login Success", Token: token}
+	m := models.Message{Message: "Login Success", Token: token, UserID: userid, UserName: username}
 
 	json.NewEncoder(w).Encode(m)
 }
 
 //SignIn method
-func (server *Server) SignIn(email, password string) (string, error) {
+func (server *Server) SignIn(email, password string) (string, int, string, error) {
 
 	var err error
 
@@ -47,12 +47,16 @@ func (server *Server) SignIn(email, password string) (string, error) {
 
 	err = server.DB.Debug().Model(models.User{}).Where("email = ?", email).Take(&user).Error
 	if err != nil {
-		return "", err
+		return "", 0, "", err
 	}
 	err = models.VerifyPassword(user.Password, password)
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
-		return "", err
+		return "", 0, "", err
 	}
 
-	return auth.CreateToken(uint32(user.UserID))
+	token, err := auth.CreateToken(uint32(user.UserID))
+	if err != nil {
+		return "", 0, "", err
+	}
+	return token, user.UserID, user.UserName, nil
 }

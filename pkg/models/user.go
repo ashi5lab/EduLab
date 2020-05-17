@@ -31,8 +31,10 @@ type User struct {
 
 // Message struct
 type Message struct {
-	Message string
-	Token   string
+	Message  string
+	Token    string
+	UserID   int
+	UserName string
 }
 
 //Hash function

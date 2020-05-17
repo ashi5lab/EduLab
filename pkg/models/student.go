@@ -10,11 +10,11 @@ import (
 
 //Student struct
 type Student struct {
-	StudentID                 int       `gorm:"primary_key;AUTO_INCREMENT" json:"StudentID"`
-	UserID                    int       `gorm:"not null;"`
-	StudentAdmno              int       `gorm:"not null;unique" json:"StudentAdmno"`
-	StudentSlno               int       `gorm:"not null;unique" json:"StudentSlno"`
-	StudentAppno              int       `gorm:"not null;unique" json:"StudentAppno"`
+	StudentID                 int `gorm:"primary_key;AUTO_INCREMENT" json:"StudentID"`
+	UserID                    int `gorm:"not null;"`
+	StudentAdmno              int `gorm:"not null;unique" json:"StudentAdmno"`
+	StudentSlno               int `gorm:"not null;unique" json:"StudentSlno"`
+	StudentAppno              int
 	StudentGuardianName       string    `gorm:"size:50;" json:"StudentGuardianName"`
 	StudentGuardianOccupation string    `gorm:"size:50;" json:"StudentGuardianOccupation"`
 	StudentGuardianRelation   string    `gorm:"size:50;" json:"StudentGuardianRelation"`
@@ -27,7 +27,7 @@ type Student struct {
 	StudentLingMinDesc        string    `gorm:"size:50;" json:"StudentLingMinDesc"`
 	StudentDOA                time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"StudentDOA"`
 	StudentAdmissionCategory  string    `gorm:"size:50;" json:"StudentAdmissionCategory"`
-	IsDeleted                 bool      `gorm:"default:false" json:"-"`
+	IsDeleted                 bool      `gorm:"default:false"`
 	CreatedBy                 int       `json:"-"`
 	CreatedOn                 time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"-"`
 	UpdatedBy                 int       `json:"-"`
@@ -142,10 +142,10 @@ func (s *Student) FindAllStudents(db *gorm.DB) (*[]Student, error) {
 }
 
 //FindStudentByID method
-func (s *Student) FindStudentByID(db *gorm.DB, sid uint32) (*Student, error) {
+func (s *Student) FindStudentByID(db *gorm.DB, uid uint32) (*Student, error) {
 	var err error
 
-	err = db.Debug().Model(&Student{}).Where("student_id=?", sid).Take(s).Error
+	err = db.Debug().Model(&Student{}).Where("user_id=?", uid).Take(s).Error
 
 	if err != nil {
 		return &Student{}, err
@@ -158,14 +158,14 @@ func (s *Student) FindStudentByID(db *gorm.DB, sid uint32) (*Student, error) {
 }
 
 //UpdateStudent a student
-func (s *Student) UpdateStudent(db *gorm.DB, sid uint32) (*Student, error) {
+func (s *Student) UpdateStudent(db *gorm.DB, uid uint32) (*Student, error) {
 	s.Prepare()
-	db = db.Debug().Model(&Student{}).Where("student_id = ?", sid).Take(&Student{}).Update(&s)
+	db = db.Debug().Model(&Student{}).Where("user_id = ?", uid).Take(&Student{}).Update(&s)
 	if db.Error != nil {
 		return &Student{}, db.Error
 	}
 	//For display Updated Student
-	err := db.Debug().Model(&Student{}).Where("student_id = ?", sid).Take(&s).Error
+	err := db.Debug().Model(&Student{}).Where("user_id = ?", uid).Take(&s).Error
 	if err != nil {
 		return &Student{}, err
 	}
