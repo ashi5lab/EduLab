@@ -7,8 +7,9 @@ import (
 //AddUserRouters function
 func (server *Server) AddUserRouters() {
 	server.Router.HandleFunc("/users", middlewares.SetMiddlewareJSON(server.Handler.CreateUser)).Methods("POST")
-	server.Router.HandleFunc("/users", middlewares.SetMiddlewareJSON(server.Handler.GetUsers)).Methods("GET")
-	server.Router.HandleFunc("/users/{id}", middlewares.SetMiddlewareJSON(server.Handler.GetUser)).Methods("GET")
-	server.Router.HandleFunc("/users/{id}", middlewares.SetMiddlewareJSON(server.Handler.UpdateUser)).Methods("PUT")
-	server.Router.HandleFunc("/users/{id}", middlewares.SetMiddlewareJSON(server.Handler.DeleteUser)).Methods("DELETE")
+	server.Router.HandleFunc("/users", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(server.Handler.GetUsers))).Methods("GET")
+	server.Router.HandleFunc("/getprofile", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(server.Handler.GetProfile))).Methods("GET")
+	server.Router.HandleFunc("/users/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(server.Handler.GetUser))).Methods("GET")
+	server.Router.HandleFunc("/users/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(server.Handler.UpdateUser))).Methods("PUT")
+	server.Router.HandleFunc("/users/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(server.Handler.DeleteUser))).Methods("DELETE")
 }

@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/ashi5lab/EduLab/pkg/auth"
 	"github.com/ashi5lab/EduLab/pkg/models"
 	"github.com/ashi5lab/EduLab/pkg/responses"
 	"github.com/gorilla/mux"
@@ -72,6 +73,31 @@ func (server *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
 
 }
 
+//GetProfile method
+func (server *Server) GetProfile(w http.ResponseWriter, r *http.Request) {
+	user := models.User{}
+	userid, err := auth.ExtractTokenUserId(r)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	err = user.ValidateID(int(userid))
+
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+
+	userGotten, err := user.FindUserByID(server.DB, int(userid))
+	m := models.Profile{UserID: userGotten.UserID, UserName: userGotten.UserName, UserRole: userGotten.RoleID, Email: userGotten.Email, Gender: userGotten.Gender}
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+	responses.JSON(w, http.StatusOK, m)
+}
+
 //GetUser method
 func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 	user := models.User{}
@@ -89,7 +115,7 @@ func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userGotten, err := user.FindUserByID(server.DB, uint32(uid))
+	userGotten, err := user.FindUserByID(server.DB, int(uid))
 
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
@@ -127,7 +153,7 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	updatedUser, err := user.UpdateUser(server.DB, uint32(uid))
+	updatedUser, err := user.UpdateUser(server.DB, int(uid))
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
@@ -155,7 +181,7 @@ func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = user.DeleteUser(server.DB, uint32(uid))
+	_, err = user.DeleteUser(server.DB, int(uid))
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return

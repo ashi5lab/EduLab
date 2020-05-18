@@ -5,24 +5,22 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-	"strings"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
-//CreateToken function
-func CreateToken(userid uint32) (string, error) {
+func CreateToken(user_id int) (string, error) {
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
-	claims["userid"] = userid
+	claims["user_id"] = user_id
 	claims["exp"] = time.Now().Add(time.Hour * 1).Unix() //Token expires after 1 hour
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(os.Getenv("API_SECRET")))
+	tokenString, err := token.SignedString([]byte(os.Getenv("API_SECRET")))
+	return tokenString, err
 
 }
 
-//ValidateToken function
 func ValidateToken(r *http.Request) error {
 	tokenString := ExtractToken(r)
 	_, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
@@ -37,22 +35,20 @@ func ValidateToken(r *http.Request) error {
 	return nil
 }
 
-//ExtractToken function
 func ExtractToken(r *http.Request) string {
 	keys := r.URL.Query()
 	token := keys.Get("token")
 	if token != "" {
 		return token
 	}
-	bearerToken := r.Header.Get("Authorization")
-	if len(strings.Split(bearerToken, " ")) == 2 {
-		return strings.Split(bearerToken, " ")[1]
+	cookie, _ := r.Cookie("access_token")
+	if cookie != nil {
+		return cookie.Value
 	}
 	return ""
 }
 
-//ExtractTokenUserId function
-func ExtractTokenUserId(r *http.Request) (uint32, error) {
+func ExtractTokenUserId(r *http.Request) (int, error) {
 
 	tokenString := ExtractToken(r)
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
@@ -70,7 +66,7 @@ func ExtractTokenUserId(r *http.Request) (uint32, error) {
 		if err != nil {
 			return 0, err
 		}
-		return uint32(uid), nil
+		return int(uid), nil
 	}
 	return 0, nil
 }

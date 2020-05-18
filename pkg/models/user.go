@@ -37,6 +37,15 @@ type Message struct {
 	UserName string
 }
 
+//Profile Struct
+type Profile struct {
+	UserID   int
+	UserName string
+	UserRole int
+	Email    string
+	Gender   string
+}
+
 //Hash function
 func Hash(password string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -159,7 +168,7 @@ func (u *User) FindAllUsers(db *gorm.DB) (*[]User, error) {
 }
 
 //FindUserByID method
-func (u *User) FindUserByID(db *gorm.DB, uid uint32) (*User, error) {
+func (u *User) FindUserByID(db *gorm.DB, uid int) (*User, error) {
 	var err error
 
 	err = db.Debug().Model(&User{}).Where("user_id=?", uid).Take(u).Error
@@ -175,7 +184,7 @@ func (u *User) FindUserByID(db *gorm.DB, uid uint32) (*User, error) {
 }
 
 //UpdateUser a user
-func (u *User) UpdateUser(db *gorm.DB, uid uint32) (*User, error) {
+func (u *User) UpdateUser(db *gorm.DB, uid int) (*User, error) {
 	u.Prepare()
 	db = db.Debug().Model(&User{}).Where("user_id = ?", uid).Take(&User{}).Update(&u)
 	if db.Error != nil {
@@ -190,7 +199,7 @@ func (u *User) UpdateUser(db *gorm.DB, uid uint32) (*User, error) {
 }
 
 //DeleteUser function
-func (u *User) DeleteUser(db *gorm.DB, uid uint32) (int64, error) {
+func (u *User) DeleteUser(db *gorm.DB, uid int) (int64, error) {
 	db = db.Debug().Model(&User{}).Where("user_id = ?", uid).Take(&User{}).UpdateColumns(
 		map[string]interface{}{
 			"is_deleted": true,

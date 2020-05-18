@@ -2,8 +2,10 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"github.com/ashi5lab/EduLab/pkg/auth"
 	"github.com/ashi5lab/EduLab/pkg/models"
@@ -33,9 +35,17 @@ func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	expire := time.Now().Add(20 * time.Minute)
+	cookie := &http.Cookie{
+		Name:     "access_token",
+		Value:    token,
+		HttpOnly: true,
+		Expires:  expire}
+	http.SetCookie(w, cookie)
+	fmt.Println(cookie)
 	m := models.Message{Message: "Login Success", Token: token, UserID: userid, UserName: username}
 
-	json.NewEncoder(w).Encode(m)
+	responses.JSON(w, http.StatusOK, m)
 }
 
 //SignIn method
@@ -54,7 +64,7 @@ func (server *Server) SignIn(email, password string) (string, int, string, error
 		return "", 0, "", err
 	}
 
-	token, err := auth.CreateToken(uint32(user.UserID))
+	token, err := auth.CreateToken(user.UserID)
 	if err != nil {
 		return "", 0, "", err
 	}
