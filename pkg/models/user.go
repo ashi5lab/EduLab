@@ -70,7 +70,7 @@ func (u *User) Validate(action string) error {
 		if u.UserName == "" {
 			return errors.New("Required UserName")
 		}
-		if len(u.UserName) < 8 {
+		if len(u.UserName) < 3 {
 			return errors.New("Username requires minimum 8 characters")
 
 		}
@@ -79,9 +79,6 @@ func (u *User) Validate(action string) error {
 		}
 		if u.PhoneNumber == "" {
 			return errors.New("Required PhoneNumber")
-		}
-		if len(u.PhoneNumber) < 10 {
-			return errors.New("Invalid Phone number")
 		}
 		if u.Email == "" {
 			return errors.New("Required Email")

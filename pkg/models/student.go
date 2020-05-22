@@ -65,36 +65,36 @@ func (s *Student) Validate(action string) error {
 			return errors.New("Required StudentAppno")
 		}
 
-		if s.StudentGuardianName == "" {
-			return errors.New("Required StudentGuardianName")
-		}
-		if s.StudentGuardianOccupation == "" {
-			return errors.New("Required StudentGuardianOccupation")
-		}
-		if s.StudentGuardianRelation == "" {
-			return errors.New("Required StudentGuardianRelation")
-		}
-		if s.StudentAddress == "" {
-			return errors.New("Required StudentAddress")
-		}
-		if s.StudentReligion == "" {
-			return errors.New("Required StudentReligion")
-		}
-		if s.StudentCaste == "" {
-			return errors.New("Required StudentCaste")
-		}
-		if s.StudentCategory == "" {
-			return errors.New("Required StudentCategory")
-		}
-		if s.StudentCaste == "" {
-			return errors.New("Required StudentCaste")
-		}
-		if s.StudentCaste == "" {
-			return errors.New("Required StudentCaste")
-		}
-		if s.StudentCaste == "" {
-			return errors.New("Required StudentCaste")
-		}
+		// if s.StudentGuardianName == "" {
+		// 	return errors.New("Required StudentGuardianName")
+		// }
+		// if s.StudentGuardianOccupation == "" {
+		// 	return errors.New("Required StudentGuardianOccupation")
+		// }
+		// if s.StudentGuardianRelation == "" {
+		// 	return errors.New("Required StudentGuardianRelation")
+		// }
+		// if s.StudentAddress == "" {
+		// 	return errors.New("Required StudentAddress")
+		// }
+		// if s.StudentReligion == "" {
+		// 	return errors.New("Required StudentReligion")
+		// }
+		// if s.StudentCaste == "" {
+		// 	return errors.New("Required StudentCaste")
+		// }
+		// if s.StudentCategory == "" {
+		// 	return errors.New("Required StudentCategory")
+		// }
+		// if s.StudentCaste == "" {
+		// 	return errors.New("Required StudentCaste")
+		// }
+		// if s.StudentCaste == "" {
+		// 	return errors.New("Required StudentCaste")
+		// }
+		// if s.StudentCaste == "" {
+		// 	return errors.New("Required StudentCaste")
+		// }
 		return nil
 
 	default:
