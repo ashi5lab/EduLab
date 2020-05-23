@@ -42,10 +42,9 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(user.Password)
 	user.Prepare()
 
-	password := generatePassword()
+	password := "admin"
 	user.Password = password
 
 	err = user.Validate("create")
