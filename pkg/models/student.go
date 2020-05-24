@@ -13,8 +13,8 @@ type Student struct {
 	StudentID                 int `gorm:"primary_key;AUTO_INCREMENT" json:"StudentID"`
 	UserID                    int `gorm:"not null;"`
 	StudentAdmno              int `gorm:"not null;unique" json:"StudentAdmno"`
-	StudentSlno               int `gorm:"not null;unique" json:"StudentSlno"`
-	StudentAppno              int
+	StudentSlno               int
+	StudentAppno              string
 	StudentGuardianName       string    `gorm:"size:50;" json:"StudentGuardianName"`
 	StudentGuardianOccupation string    `gorm:"size:50;" json:"StudentGuardianOccupation"`
 	StudentGuardianRelation   string    `gorm:"size:50;" json:"StudentGuardianRelation"`
@@ -24,7 +24,7 @@ type Student struct {
 	StudentCategory           string    `gorm:"size:20;" json:"StudentCategory"`
 	StudentIsOEC              bool      `json:"StudentIsOEC"`
 	StudentIsLingMin          bool      `json:"StudentIsLingMin"`
-	StudentLingMinDesc        string    `gorm:"size:50;" json:"StudentLingMinDesc"`
+	StudentLingMin            string    `gorm:"size:50;" json:"StudentLingMinDesc"`
 	StudentDOA                time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"StudentDOA"`
 	StudentAdmissionCategory  string    `gorm:"size:50;" json:"StudentAdmissionCategory"`
 	IsDeleted                 bool      `gorm:"default:false"`
@@ -57,13 +57,13 @@ func (s *Student) Validate(action string) error {
 		if s.StudentAdmno == 0 {
 			return errors.New("Required StudentAdmno")
 		}
-		if s.StudentSlno == 0 {
-			return errors.New("Required StudentSlno")
-		}
+		// if s.StudentSlno == 0 {
+		// 	return errors.New("Required StudentSlno")
+		// }
 
-		if s.StudentAppno == 0 {
-			return errors.New("Required StudentAppno")
-		}
+		// if s.StudentAppno == 0 {
+		// 	return errors.New("Required StudentAppno")
+		// }
 
 		// if s.StudentGuardianName == "" {
 		// 	return errors.New("Required StudentGuardianName")
