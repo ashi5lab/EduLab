@@ -13,10 +13,15 @@ func SetMiddlewareJSON(next http.HandlerFunc) http.HandlerFunc {
 		if r.Method == "OPTIONS" {
 			return
 		}
-		w.Header().Set("Content-Type", "application/json")
+
 		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Connection", "Keep-Alive")
+		w.Header().Set("Accept", "application/json")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
 		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, X-PINGOTHER")
 		next(w, r)
 	}
 }
