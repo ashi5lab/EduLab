@@ -16,6 +16,7 @@ type StudentClassMap struct {
 	CreatedBy      int       `json:"-"`
 	UpdatedBy      int       `json:"-"`
 	UpdatedOn      time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"-"`
+	Students       Student   `gorm:"foreignkey:StudentID;association_foreignkey:StudentID"`
 }
 
 //SaveStudentClassMap function
@@ -34,7 +35,7 @@ func (scm *StudentClassMap) SaveStudentClassMap(db *gorm.DB) (*StudentClassMap, 
 func (scm *StudentClassMap) FindAllStudentClassMaps(db *gorm.DB) (*[]StudentClassMap, error) {
 	var err error
 	studentclassmaps := []StudentClassMap{}
-	err = db.Debug().Model(&StudentClassMap{}).Limit(100).Find(&studentclassmaps).Error
+	err = db.Debug().Preload("Students").Preload("Students.Users").Model(&StudentClassMap{}).Find(&studentclassmaps).Error
 
 	if err != nil {
 		return &[]StudentClassMap{}, err

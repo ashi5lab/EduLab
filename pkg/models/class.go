@@ -10,11 +10,11 @@ import (
 
 //Class Struct
 type Class struct {
-	ClassID   uint32    `gorm:"primary_key;AUTO_INCREMENT" json:"ClassID"`
-	Standard  string    `gorm:"size:50;not null;" json:"Standard"`
-	Division  string    `gorm:"size:40;not null;" json:"Division"`
-	Year      int       `gorm:"not null;" json:"Year"`
-	TeacherID int       `gorm:"not null;"`
+	ClassID   uint32 `gorm:"primary_key;AUTO_INCREMENT" json:"ClassID"`
+	Standard  string `gorm:"size:50;not null;" json:"Standard"`
+	Division  string `gorm:"size:40;not null;" json:"Division"`
+	Year      int    `gorm:"not null;" json:"Year"`
+	TeacherID int
 	Teacher   Teacher   `gorm:"foreignkey:TeacherID;association_foreignkey:TeacherID"`
 	User      User      `gorm:"foreignkey:UserID;association_foreignkey:UserID"`
 	IsDeleted bool      `gorm:"default:false" json:"-"`
@@ -50,10 +50,6 @@ func (c *Class) Validate(action string) error {
 		if c.Year == 0 {
 			return errors.New("Required Year")
 		}
-
-		if c.TeacherID == 0 {
-			return errors.New("Required Teacher ID")
-		}
 		return nil
 
 	default:
@@ -81,7 +77,7 @@ func (c *Class) FindAllClasses(db *gorm.DB) (*[]Class, error) {
 	var err error
 	classes := []Class{}
 
-	err = db.Debug().Preload("Teacher", "is_deleted=?", false).Model(&Class{}).Limit(100).Find(&classes).Error
+	err = db.Debug().Preload("Teacher", "is_deleted=?", false).Preload("Teacher.Users").Model(&Class{}).Find(&classes).Error
 
 	if err != nil {
 		println(err)

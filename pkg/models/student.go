@@ -132,7 +132,7 @@ func (s *Student) SaveStudent(db *gorm.DB) (*Student, error) {
 func (s *Student) FindAllStudents(db *gorm.DB) (*[]Student, error) {
 	var err error
 	students := []Student{}
-	err = db.Debug().Preload("Users", "is_deleted=?", false).Model(&Student{}).Limit(100).Find(&students).Error
+	err = db.Debug().Preload("Users", "is_deleted=?", false).Preload("Users.Roles").Model(&Student{}).Find(&students).Error
 
 	if err != nil {
 		return &[]Student{}, err

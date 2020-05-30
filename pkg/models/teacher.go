@@ -80,7 +80,7 @@ func (t *Teacher) SaveTeacher(db *gorm.DB) (*Teacher, error) {
 func (t *Teacher) FindAllTeachers(db *gorm.DB) (*[]Teacher, error) {
 	var err error
 	teachers := []Teacher{}
-	err = db.Debug().Preload("Users", "is_deleted=?", false).Model(&Teacher{}).Limit(100).Find(&teachers).Error
+	err = db.Debug().Preload("Users", "is_deleted=?", false).Model(&Teacher{}).Find(&teachers).Error
 
 	if err != nil {
 		return &[]Teacher{}, err

@@ -27,6 +27,7 @@ type User struct {
 	CreatedOn   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"-"`
 	UpdatedBy   int       `json:"-"`
 	UpdatedOn   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"-"`
+	Roles       Role      `gorm:"foreignkey:RoleID;association_foreignkey:RoleID"`
 }
 
 // Message struct
@@ -155,7 +156,7 @@ func (u *User) SaveUser(db *gorm.DB) (*User, error) {
 func (u *User) FindAllUsers(db *gorm.DB) (*[]User, error) {
 	var err error
 	users := []User{}
-	err = db.Debug().Model(&User{}).Limit(100).Where("is_deleted = ?", false).Find(&users).Error
+	err = db.Debug().Preload("Roles").Model(&User{}).Where("is_deleted = ?", false).Find(&users).Error
 
 	if err != nil {
 		return &[]User{}, err
