@@ -15,8 +15,6 @@ type Class struct {
 	Division  string `gorm:"size:40;not null;" json:"Division"`
 	Year      int    `gorm:"not null;" json:"Year"`
 	TeacherID int
-	Teacher   Teacher   `gorm:"foreignkey:TeacherID;association_foreignkey:TeacherID"`
-	User      User      `gorm:"foreignkey:UserID;association_foreignkey:UserID"`
 	IsDeleted bool      `gorm:"default:false" json:"-"`
 	CreatedBy int       `json:"-"`
 	CreatedOn time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"-"`
