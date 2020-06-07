@@ -12,7 +12,7 @@ import (
 //Teacher struct
 type Teacher struct {
 	TeacherID     uint32    `gorm:"primary_key;AUTO_INCREMENT" json:"TeacherID"`
-	UserID        int       `gorm:"not null;"`
+	UserID        int       `gorm:"not null;unique"`
 	Qualification string    `gorm:"size:30;" json:"Qualification"`
 	Subject       string    `gorm:"size:20;" json:"Subject"`
 	ClassID       int       `gorm:""`

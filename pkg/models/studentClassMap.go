@@ -10,8 +10,8 @@ import (
 //StudentClassMap struct
 type StudentClassMap struct {
 	StudentClassID int       `gorm:"primary_key;AUTO_INCREMENT" json:"StudentClassID"`
-	StudentID      int       `gorm:"StudentID:UserID;association_foreignkey:StudentID" json:"StudentID"`
-	ClassID        int       `gorm:"ClassID:UserID;association_foreignkey:ClassID" json:"ClassID"`
+	StudentID      int       `gorm:"not null;unique"`
+	ClassID        int       `gorm:"not null"`
 	IsDeleted      bool      `gorm:"default:false" json:"-"`
 	CreatedBy      int       `json:"-"`
 	UpdatedBy      int       `json:"-"`
