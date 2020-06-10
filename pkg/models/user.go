@@ -156,7 +156,7 @@ func (u *User) SaveUser(db *gorm.DB) (*User, error) {
 func (u *User) FindAllUsers(db *gorm.DB) (*[]User, error) {
 	var err error
 	users := []User{}
-	err = db.Debug().Preload("Roles").Model(&User{}).Where("is_deleted = ?", false).Find(&users).Error
+	err = db.Debug().Preload("Roles").Model(&User{}).Where("is_deleted = ?", false).Order("user_id").Find(&users).Error
 
 	if err != nil {
 		return &[]User{}, err
