@@ -15,24 +15,25 @@ type Student struct {
 	StudentAdmno              int `gorm:"not null;unique" json:"StudentAdmno"`
 	StudentSlno               int
 	StudentAppno              string
-	StudentGuardianName       string    `gorm:"size:50;" json:"StudentGuardianName"`
-	StudentGuardianOccupation string    `gorm:"size:50;" json:"StudentGuardianOccupation"`
-	StudentGuardianRelation   string    `gorm:"size:50;" json:"StudentGuardianRelation"`
-	StudentAddress            string    `gorm:"size:100;" json:"StudentAddress"`
-	StudentReligion           string    `gorm:"size:20;" json:"StudentReligion"`
-	StudentCaste              string    `gorm:"size:20;" json:"StudentCaste"`
-	StudentCategory           string    `gorm:"size:20;" json:"StudentCategory"`
-	StudentIsOEC              bool      `json:"StudentIsOEC"`
-	StudentIsLingMin          bool      `json:"StudentIsLingMin"`
-	StudentLingMin            string    `gorm:"size:50;" json:"StudentLingMinDesc"`
-	StudentDOA                time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"StudentDOA"`
-	StudentAdmissionCategory  string    `gorm:"size:50;" json:"StudentAdmissionCategory"`
-	IsDeleted                 bool      `gorm:"default:false"`
-	CreatedBy                 int       `json:"-"`
-	CreatedOn                 time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"-"`
-	UpdatedBy                 int       `json:"-"`
-	UpdatedOn                 time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"-"`
-	Users                     User      `gorm:"foreignkey:UserID;association_foreignkey:UserID"`
+	StudentGuardianName       string          `gorm:"size:50;" json:"StudentGuardianName"`
+	StudentGuardianOccupation string          `gorm:"size:50;" json:"StudentGuardianOccupation"`
+	StudentGuardianRelation   string          `gorm:"size:50;" json:"StudentGuardianRelation"`
+	StudentAddress            string          `gorm:"size:100;" json:"StudentAddress"`
+	StudentReligion           string          `gorm:"size:20;" json:"StudentReligion"`
+	StudentCaste              string          `gorm:"size:20;" json:"StudentCaste"`
+	StudentCategory           string          `gorm:"size:20;" json:"StudentCategory"`
+	StudentIsOEC              bool            `json:"StudentIsOEC"`
+	StudentIsLingMin          bool            `json:"StudentIsLingMin"`
+	StudentLingMin            string          `gorm:"size:50;" json:"StudentLingMinDesc"`
+	StudentDOA                time.Time       `gorm:"default:CURRENT_TIMESTAMP" json:"StudentDOA"`
+	StudentAdmissionCategory  string          `gorm:"size:50;" json:"StudentAdmissionCategory"`
+	IsDeleted                 bool            `gorm:"default:false"`
+	CreatedBy                 int             `json:"-"`
+	CreatedOn                 time.Time       `gorm:"default:CURRENT_TIMESTAMP" json:"-"`
+	UpdatedBy                 int             `json:"-"`
+	UpdatedOn                 time.Time       `gorm:"default:CURRENT_TIMESTAMP" json:"-"`
+	Users                     User            `gorm:"foreignkey:UserID;association_foreignkey:UserID"`
+	Classes                   StudentClassMap `gorm:"many2many:StudentClassMap;foreignkey:StudentID;association_foreignkey:StudentID;association_jointable_foreignkey:ClassID;jointable_foreignkey:ClassID;"`
 }
 
 //Prepare function
@@ -132,7 +133,7 @@ func (s *Student) SaveStudent(db *gorm.DB) (*Student, error) {
 func (s *Student) FindAllStudents(db *gorm.DB) (*[]Student, error) {
 	var err error
 	students := []Student{}
-	err = db.Debug().Preload("Users", "is_deleted=?", false).Preload("Users.Roles").Model(&Student{}).Find(&students).Error
+	err = db.Debug().Preload("Users", "is_deleted=?", false).Preload("Users.Roles").Preload("Classes").Model(&Student{}).Find(&students).Error
 
 	if err != nil {
 		return &[]Student{}, err

@@ -11,9 +11,9 @@ import (
 //Class Struct
 type Class struct {
 	ClassID   uint32 `gorm:"primary_key;AUTO_INCREMENT" json:"ClassID"`
-	Standard  string `gorm:"size:50;not null;" json:"Standard"`
-	Division  string `gorm:"size:40;not null;" json:"Division"`
-	Year      int    `gorm:"not null;" json:"Year"`
+	Standard  string
+	Division  string
+	Year      int
 	TeacherID int
 	IsDeleted bool      `gorm:"default:false" json:"-"`
 	CreatedBy int       `json:"-"`
