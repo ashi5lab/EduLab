@@ -11,7 +11,7 @@ import (
 //Student struct
 type Student struct {
 	StudentID                 int `gorm:"primary_key;AUTO_INCREMENT" json:"StudentID"`
-	UserID                    int `gorm:"not null;"`
+	UserID                    int `gorm:"not null;unique"`
 	StudentAdmno              int `gorm:"not null;unique" json:"StudentAdmno"`
 	StudentSlno               int
 	StudentAppno              string
