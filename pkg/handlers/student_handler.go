@@ -71,20 +71,20 @@ func (server *Server) GetStudents(w http.ResponseWriter, r *http.Request) {
 func (server *Server) GetStudent(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
-	uid, err := strconv.ParseUint(vars["id"], 10, 32)
+	sid, err := strconv.ParseUint(vars["id"], 10, 32)
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
 	}
 	student := models.Student{}
 
-	err = student.ValidateID(int(uid))
+	err = student.ValidateID(int(sid))
 
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
-	userGotten, err := student.FindStudentByID(server.DB, uint32(uid))
+	userGotten, err := student.FindStudentByID(server.DB, uint32(sid))
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
@@ -95,12 +95,12 @@ func (server *Server) GetStudent(w http.ResponseWriter, r *http.Request) {
 //UpdateStudent Method
 func (server *Server) UpdateStudent(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	uid, err := strconv.ParseUint(vars["id"], 10, 32)
+	sid, err := strconv.ParseUint(vars["id"], 10, 32)
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
 	}
-	fmt.Println(uid)
+
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
@@ -114,14 +114,14 @@ func (server *Server) UpdateStudent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = student.ValidateID(int(uid))
+	err = student.ValidateID(int(sid))
 
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
 
-	updatedStudent, err := student.UpdateStudent(server.DB, uint32(uid))
+	updatedStudent, err := student.UpdateStudent(server.DB, uint32(sid))
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return

@@ -143,10 +143,10 @@ func (s *Student) FindAllStudents(db *gorm.DB) (*[]Student, error) {
 }
 
 //FindStudentByID method
-func (s *Student) FindStudentByID(db *gorm.DB, uid uint32) (*Student, error) {
+func (s *Student) FindStudentByID(db *gorm.DB, sid uint32) (*Student, error) {
 	var err error
 
-	err = db.Debug().Model(&Student{}).Where("user_id=?", uid).Take(s).Error
+	err = db.Debug().Model(&Student{}).Where("student_id=?", sid).Take(s).Error
 
 	if err != nil {
 		return &Student{}, err
@@ -159,14 +159,14 @@ func (s *Student) FindStudentByID(db *gorm.DB, uid uint32) (*Student, error) {
 }
 
 //UpdateStudent a student
-func (s *Student) UpdateStudent(db *gorm.DB, uid uint32) (*Student, error) {
+func (s *Student) UpdateStudent(db *gorm.DB, sid uint32) (*Student, error) {
 	s.Prepare()
-	db = db.Debug().Model(&Student{}).Where("user_id = ?", uid).Take(&Student{}).Update(&s)
+	db = db.Debug().Model(&Student{}).Where("student_id = ?", sid).Take(&Student{}).Update(&s)
 	if db.Error != nil {
 		return &Student{}, db.Error
 	}
 	//For display Updated Student
-	err := db.Debug().Model(&Student{}).Where("user_id = ?", uid).Take(&s).Error
+	err := db.Debug().Model(&Student{}).Where("student_id  = ?", sid).Take(&s).Error
 	if err != nil {
 		return &Student{}, err
 	}
