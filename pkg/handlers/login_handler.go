@@ -43,6 +43,7 @@ func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 		Expires:  expire}
 	http.SetCookie(w, cookie)
 	fmt.Println(cookie)
+	time.Sleep(3 * time.Second)
 	m := models.Message{Message: "Login Success", Token: token, UserID: userid, UserName: username}
 
 	responses.JSON(w, http.StatusOK, m)
