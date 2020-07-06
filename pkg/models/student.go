@@ -133,7 +133,7 @@ func (s *Student) SaveStudent(db *gorm.DB) (*Student, error) {
 func (s *Student) FindAllStudents(db *gorm.DB) (*[]Student, error) {
 	var err error
 	students := []Student{}
-	err = db.Debug().Preload("Users", "is_deleted=?", false).Preload("Users.Roles").Preload("Classes").Model(&Student{}).Find(&students).Error
+	err = db.Debug().Preload("Users", "is_deleted=?", false).Preload("Users.Roles").Preload("Classes").Where("is_deleted=?", false).Model(&Student{}).Find(&students).Error
 
 	if err != nil {
 		return &[]Student{}, err
@@ -171,4 +171,17 @@ func (s *Student) UpdateStudent(db *gorm.DB, sid uint32) (*Student, error) {
 		return &Student{}, err
 	}
 	return s, nil
+}
+
+//DeleteStudent function
+func (s *Student) DeleteStudent(db *gorm.DB, sid int) (int64, error) {
+	db = db.Debug().Model(&Student{}).Where("student_id = ?", sid).Take(&Student{}).UpdateColumns(
+		map[string]interface{}{
+			"is_deleted": true,
+		},
+	)
+	if db.Error != nil {
+		return 0, db.Error
+	}
+	return db.RowsAffected, nil
 }

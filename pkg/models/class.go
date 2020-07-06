@@ -75,7 +75,7 @@ func (c *Class) FindAllClasses(db *gorm.DB) (*[]Class, error) {
 	var err error
 	classes := []Class{}
 
-	err = db.Debug().Model(&Class{}).Find(&classes).Error
+	err = db.Debug().Model(&Class{}).Where("is_deleted = ?", false).Order("class_id").Find(&classes).Error
 
 	if err != nil {
 		println(err)

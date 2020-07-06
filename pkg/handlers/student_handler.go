@@ -129,3 +129,28 @@ func (server *Server) UpdateStudent(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusOK, updatedStudent)
 	json.NewEncoder(w).Encode("Student Updated")
 }
+
+//DeleteStudent method
+func (server *Server) DeleteStudent(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	sid, err := strconv.ParseUint(vars["id"], 10, 32)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	student := models.Student{}
+
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+
+	updatedStudent, err := student.DeleteStudent(server.DB, int(sid))
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+	responses.JSON(w, http.StatusOK, updatedStudent)
+	json.NewEncoder(w).Encode("Student Deleted")
+}
